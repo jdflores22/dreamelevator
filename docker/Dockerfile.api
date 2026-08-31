@@ -15,4 +15,5 @@ WORKDIR /app
 COPY --from=build /app/publish .
 RUN mkdir -p wwwroot/uploads
 EXPOSE 5000
-ENTRYPOINT ["dotnet", "DreamElevator.API.dll"]
+# Hosts such as Railway assign the port at runtime, so bind to $PORT when it is set.
+ENTRYPOINT ["sh", "-c", "exec dotnet DreamElevator.API.dll --urls http://0.0.0.0:${PORT:-5000}"]
