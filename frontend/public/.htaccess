@@ -1,3 +1,6 @@
+# Hosts that default to index.php only would 403 on the site root
+DirectoryIndex index.html index.php
+
 # SPA routing: serve index.html for any path that isn't a real file/dir
 <IfModule mod_rewrite.c>
   RewriteEngine On
