@@ -1,6 +1,7 @@
 import { Clock } from 'lucide-react';
 import { useSiteSettingsMap } from '@/hooks/useSiteSettingsMap';
 import { parseOfficeHoursLines } from '@/utils/media';
+import { deecCopy } from '@/utils/deecCopy';
 import { cn } from '@/utils/cn';
 
 interface ContactOfficeHoursProps {
@@ -9,12 +10,15 @@ interface ContactOfficeHoursProps {
 
 export function ContactOfficeHours({ isDark = false }: ContactOfficeHoursProps) {
   const { get } = useSiteSettingsMap();
-  const title = get('contact_office_hours_title', 'Office hours');
-  const rowsText = get(
-    'contact_office_hours',
-    'Mon–Fri|9:00 AM – 6:00 PM (PHT)\nSat–Sun|Closed',
+  const title = deecCopy(get('contact_office_hours_title'), 'Office hours');
+  const rowsText = deecCopy(
+    get('contact_office_hours'),
+    'Mon–Fri|8:00 AM – 5:00 PM\nSat|8:00 AM – 12:00 NN\nSun|Closed',
   );
-  const note = get('contact_office_hours_note', 'Times shown in Philippines Standard Time (PHT).');
+  const note = deecCopy(
+    get('contact_office_hours_note'),
+    'Visit is by appointment only. Trunkline is staffed 8:00 AM – 5:00 PM, Monday to Friday.',
+  );
 
   const rows = parseOfficeHoursLines(rowsText);
   if (rows.length === 0) return null;

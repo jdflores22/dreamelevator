@@ -1,4 +1,4 @@
-import { Globe, Mail, MapPin, Phone, ArrowUpRight } from 'lucide-react';
+import { Globe, Mail, MapPin, Phone, ArrowUpRight, Smartphone } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Container } from '@/components/common/Container';
 import { SectionHeading } from '@/components/common/SectionHeading';
@@ -6,34 +6,36 @@ import { useSectionContent, useSectionDarkBackground } from '@/hooks/useSectionC
 import { useSiteSettingsMap } from '@/hooks/useSiteSettingsMap';
 import { sectionSurfaceClass, sectionTheme } from '@/utils/sectionSurface';
 import { formatWebsiteHref } from '@/utils/media';
+import { mailtoHref, splitContactList, telHref } from '@/utils/contact';
+import { deecCopy } from '@/utils/deecCopy';
 import { cn } from '@/utils/cn';
 import { ContactFormCard } from './ContactFormCard';
 import { ContactOfficeHours } from './ContactOfficeHours';
 
 const QUICK_LINKS = [
   { label: 'Our services', href: '/services' },
-  { label: 'Software products', href: '/products' },
-  { label: 'Case studies', href: '/portfolio' },
-  { label: 'Careers', href: '/careers' },
+  { label: 'Lift products', href: '/products' },
+  { label: 'Gallery', href: '/gallery' },
+  { label: 'Clients', href: '/clients' },
 ] as const;
 
 interface ContactMethodProps {
   icon: typeof Mail;
   label: string;
-  value: string;
-  href?: string;
+  lines: { text: string; href?: string }[];
   isDark: boolean;
 }
 
-function ContactMethodCard({ icon: Icon, label, value, href, isDark }: ContactMethodProps) {
-  const content = (
+function ContactMethodCard({ icon: Icon, label, lines, isDark }: ContactMethodProps) {
+  if (lines.length === 0) return null;
+
+  return (
     <div
       className={cn(
-        'group flex h-full flex-col rounded-xl border p-5 transition-colors',
+        'flex h-full flex-col rounded-xl border p-5 transition-colors',
         isDark
           ? 'border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10'
           : 'border-slate-200 bg-white hover:border-brand-gold-400/40 hover:shadow-sm',
-        href && 'cursor-pointer',
       )}
     >
       <div
@@ -47,57 +49,74 @@ function ContactMethodCard({ icon: Icon, label, value, href, isDark }: ContactMe
       <p className={cn('text-xs font-semibold uppercase tracking-wider', isDark ? 'text-slate-400' : 'text-slate-500')}>
         {label}
       </p>
-      <p
-        className={cn(
-          'mt-1 flex items-start gap-1 text-sm font-medium leading-snug',
-          isDark ? 'text-white' : 'text-primary-900',
-        )}
-      >
-        <span className="flex-1">{value}</span>
-        {href && (
-          <ArrowUpRight
-            className={cn(
-              'mt-0.5 h-4 w-4 shrink-0 opacity-0 transition-opacity group-hover:opacity-100',
-              isDark ? 'text-brand-gold-400' : 'text-brand-gold-600',
-            )}
-          />
-        )}
-      </p>
+      <div className="mt-1 space-y-1">
+        {lines.map((line) => {
+          const className = cn(
+            'flex items-start gap-1 text-sm font-medium leading-snug',
+            isDark ? 'text-white' : 'text-primary-900',
+            line.href && 'hover:text-brand-gold-600',
+          );
+          const body = (
+            <>
+              <span className="flex-1">{line.text}</span>
+              {line.href ? (
+                <ArrowUpRight
+                  className={cn(
+                    'mt-0.5 h-4 w-4 shrink-0 opacity-40',
+                    isDark ? 'text-brand-gold-400' : 'text-brand-gold-600',
+                  )}
+                />
+              ) : null}
+            </>
+          );
+          return line.href ? (
+            <a
+              key={line.text}
+              href={line.href}
+              className={className}
+              target={line.href.startsWith('http') ? '_blank' : undefined}
+              rel={line.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+            >
+              {body}
+            </a>
+          ) : (
+            <p key={line.text} className={className}>
+              {body}
+            </p>
+          );
+        })}
+      </div>
     </div>
   );
-
-  if (href) {
-    return (
-      <a href={href} target={href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer">
-        {content}
-      </a>
-    );
-  }
-
-  return content;
 }
 
 export function ContactMainSection() {
   const isDark = useSectionDarkBackground('contact_main');
   const theme = sectionTheme(isDark);
   const { get } = useSiteSettingsMap();
-  const section = useSectionContent('contact_main', {
-    eyebrow: 'Contact details',
-    title: 'Let’s start a conversation',
-    subtitle:
-      'Whether you need a product demo, custom development, or ongoing support — reach out and we’ll connect you with the right team.',
-  });
+  const raw = useSectionContent('contact_main');
+  const section = {
+    eyebrow: deecCopy(raw.eyebrow, 'Las Piñas office'),
+    title: deecCopy(raw.title, 'Let’s start with an assessment'),
+    subtitle: deecCopy(
+      raw.subtitle,
+      'Tell us about the building, the equipment, or the service you need — we will connect you with the right team.',
+    ),
+  };
 
-  const email = get('company_email', 'info@trans-net.com');
-  const phone = get('company_phone', '+1-800-TRANS-NET');
-  const address = get('company_address', 'Global Headquarters');
-  const website = get('company_website', 'www.trans-net.com');
+  const email = get('company_email');
+  const emails = [email, get('company_email_alt')].map((item) => item.trim()).filter(Boolean);
+  const uniqueEmails = [...new Set(emails)];
+  const phone = get('company_phone');
+  const mobiles = splitContactList(get('company_mobiles', ''));
+  const address = get('company_address');
+  const website = get('company_website');
   const websiteHref = formatWebsiteHref(website);
 
-  const formTitle = get('contact_form_title', 'Send us a message');
-  const formSubtitle = get(
-    'contact_form_subtitle',
-    'Fill out the form and our team will get back to you within one business day.',
+  const formTitle = deecCopy(get('contact_form_title'), 'Request a quote');
+  const formSubtitle = deecCopy(
+    get('contact_form_subtitle'),
+    'Share the site, equipment type, and what you need — installation, modernization, or maintenance.',
   );
 
   return (
@@ -118,25 +137,28 @@ export function ContactMainSection() {
               <ContactMethodCard
                 icon={Mail}
                 label="Email"
-                value={email}
-                href={`mailto:${email}`}
+                lines={uniqueEmails.map((item) => ({ text: item, href: mailtoHref(item) }))}
                 isDark={isDark}
               />
               <ContactMethodCard
                 icon={Phone}
-                label="Phone"
-                value={phone}
-                href={`tel:${phone.replace(/\s/g, '')}`}
+                label="Trunkline"
+                lines={phone ? [{ text: phone, href: telHref(phone) }] : []}
+                isDark={isDark}
+              />
+              <ContactMethodCard
+                icon={Smartphone}
+                label="Mobile"
+                lines={mobiles.map((item) => ({ text: item, href: telHref(item) }))}
                 isDark={isDark}
               />
               <ContactMethodCard
                 icon={Globe}
                 label="Website"
-                value={website}
-                href={websiteHref}
+                lines={website ? [{ text: website, href: websiteHref }] : []}
                 isDark={isDark}
               />
-              <ContactMethodCard icon={MapPin} label="Address" value={address} isDark={isDark} />
+              <ContactMethodCard icon={MapPin} label="Address" lines={address ? [{ text: address }] : []} isDark={isDark} />
             </div>
 
             <ContactOfficeHours isDark={isDark} />
@@ -156,7 +178,7 @@ export function ContactMainSection() {
                     <Link
                       to={link.href}
                       className={cn(
-                        'inline-flex rounded-full border px-3 py-1.5 text-xs font-medium transition-colors',
+                        'inline-flex rounded-sm border px-3 py-1.5 text-xs font-medium transition-colors',
                         isDark
                           ? 'border-white/15 text-slate-200 hover:border-white/30 hover:bg-white/10'
                           : 'border-slate-200 text-slate-700 hover:border-primary-300 hover:text-primary-900',

@@ -6,6 +6,7 @@ import { SectionHeading } from '@/components/common/SectionHeading';
 import { Spinner } from '@/components/ui/Spinner';
 import { useSectionContent, useSectionDarkBackground } from '@/hooks/useSectionContent';
 import { sectionSurfaceClass, sectionTheme } from '@/utils/sectionSurface';
+import { deecCopy } from '@/utils/deecCopy';
 import { cn } from '@/utils/cn';
 
 export function ContactFAQSection() {
@@ -14,11 +15,15 @@ export function ContactFAQSection() {
   const sorted = [...(faqItems ?? [])].sort((a, b) => a.sortOrder - b.sortOrder);
   const isDark = useSectionDarkBackground('contact_faq');
   const theme = sectionTheme(isDark);
-  const section = useSectionContent('contact_faq', {
-    eyebrow: 'FAQ',
-    title: 'Common questions before you reach out',
-    subtitle: 'Quick answers about engagement models, timelines, and how we work with new clients.',
-  });
+  const raw = useSectionContent('contact_faq');
+  const section = {
+    eyebrow: deecCopy(raw.eyebrow, 'FAQ'),
+    title: deecCopy(raw.title, 'Common questions'),
+    subtitle: deecCopy(
+      raw.subtitle,
+      'Brands we service, free assessments, shafts, modernization, and how to request a quote.',
+    ),
+  };
 
   return (
     <section className={sectionSurfaceClass(isDark, 'muted')}>

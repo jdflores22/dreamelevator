@@ -1,4 +1,4 @@
-import { ArrowRight, Building2, Code2, Headphones } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Container } from '@/components/common/Container';
@@ -8,18 +8,13 @@ import { useSectionDarkBackground } from '@/hooks/useSectionContent';
 import { sectionSurfaceClass } from '@/utils/sectionSurface';
 import { cn } from '@/utils/cn';
 
-const VALUE_PILLS = [
-  { icon: Code2, label: 'Custom engineering' },
-  { icon: Headphones, label: 'Long-term support' },
-  { icon: Building2, label: 'Enterprise focus' },
-] as const;
-
 interface AboutStorySectionProps {
   eyebrow: string;
   title: string;
   intro: string;
   secondary: string;
-  imageUrl?: string;
+  photos: string[];
+  values: string[];
 }
 
 export function AboutStorySection({
@@ -27,24 +22,24 @@ export function AboutStorySection({
   title,
   intro,
   secondary,
-  imageUrl,
+  photos,
+  values,
 }: AboutStorySectionProps) {
   const isDark = useSectionDarkBackground('about_story');
 
   return (
     <section className={sectionSurfaceClass(isDark)}>
       <Container>
-        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+        <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16">
           <motion.div
-            initial={{ opacity: 0, x: -16 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.45 }}
+            transition={{ duration: 0.4 }}
           >
             <SectionHeading
               eyebrow={eyebrow}
               title={title}
-              showAccent
               align="left"
               className="mb-0"
               theme={isDark ? 'dark' : 'light'}
@@ -55,28 +50,29 @@ export function AboutStorySection({
                 isDark ? 'text-slate-300' : 'text-slate-600',
               )}
             >
-              <p>{intro}</p>
-              <p>{secondary}</p>
+              {intro ? <p>{intro}</p> : null}
+              {secondary ? <p>{secondary}</p> : null}
             </div>
 
-            <div className="mt-8 flex flex-wrap gap-2">
-              {VALUE_PILLS.map(({ icon: Icon, label }) => (
-                <span
-                  key={label}
-                  className={cn(
-                    'inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium',
-                    isDark
-                      ? 'border-white/15 bg-white/5 text-slate-200'
-                      : 'border-slate-200 bg-slate-50 text-primary-800',
-                  )}
-                >
-                  <Icon className="h-3.5 w-3.5 text-brand-gold-600" strokeWidth={1.75} />
-                  {label}
-                </span>
-              ))}
-            </div>
+            {values.length > 0 ? (
+              <div className="mt-8 flex flex-wrap gap-2">
+                {values.map((label) => (
+                  <span
+                    key={label}
+                    className={cn(
+                      'inline-flex items-center border px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.14em]',
+                      isDark
+                        ? 'border-white/15 bg-white/5 text-slate-200'
+                        : 'border-slate-200 bg-slate-50 text-primary-800',
+                    )}
+                  >
+                    {label}
+                  </span>
+                ))}
+              </div>
+            ) : null}
 
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-8">
               <Link to="/services">
                 <Button
                   variant="outline"
@@ -90,62 +86,30 @@ export function AboutStorySection({
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
-              <Link to="/portfolio">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={cn(
-                    isDark && 'text-slate-200 hover:bg-white/10 hover:text-white',
-                  )}
-                >
-                  View portfolio
-                </Button>
-              </Link>
             </div>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 16 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.45, delay: 0.1 }}
-            className="relative"
-          >
-            {imageUrl ? (
-              <div
-                className={cn(
-                  'overflow-hidden rounded-2xl border shadow-sm',
-                  isDark ? 'border-white/15' : 'border-slate-200',
-                )}
-              >
-                <img src={imageUrl} alt="" className="aspect-[4/3] w-full object-cover" />
-              </div>
-            ) : (
-              <div
-                className={cn(
-                  'flex aspect-[4/3] items-center justify-center rounded-2xl border',
-                  isDark ? 'border-white/15 bg-white/5' : 'border-slate-200 bg-slate-50',
-                )}
-              >
-                <div className="px-8 text-center">
-                  <Building2
-                    className={cn('mx-auto h-12 w-12', isDark ? 'text-brand-gold-400/60' : 'text-primary-300')}
-                    strokeWidth={1.25}
-                  />
-                  <p className={cn('mt-4 text-sm font-medium', isDark ? 'text-slate-400' : 'text-slate-500')}>
-                    Team or office photo
-                  </p>
-                  <p className={cn('mt-1 text-xs', isDark ? 'text-slate-500' : 'text-slate-400')}>
-                    Add one in Settings → Page content → About
-                  </p>
-                </div>
-              </div>
-            )}
-            <div
-              className="pointer-events-none absolute -bottom-4 -right-4 -z-10 h-full w-full rounded-2xl bg-brand-gold-500/10"
-              aria-hidden
-            />
-          </motion.div>
+          {photos.length > 0 ? (
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.45, delay: 0.06 }}
+              className={cn('grid gap-3', photos.length > 1 ? 'grid-cols-2 sm:grid-cols-3' : 'grid-cols-1')}
+            >
+              {photos.map((src, index) => (
+                <figure
+                  key={src}
+                  className={cn(
+                    'overflow-hidden bg-slate-100 shadow-[0_24px_50px_-28px_rgba(10,49,68,0.45)]',
+                    index === 1 && photos.length === 3 && 'sm:mt-6',
+                  )}
+                >
+                  <img src={src} alt="" className="aspect-[3/4] h-full w-full object-cover" />
+                </figure>
+              ))}
+            </motion.div>
+          ) : null}
         </div>
       </Container>
     </section>

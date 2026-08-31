@@ -65,7 +65,7 @@ export function AboutStatsSection({ stats }: AboutStatsSectionProps) {
                 {stat.label}
               </p>
               <Link
-                to="/portfolio"
+                to="/gallery"
                 className={cn(
                   'mt-6 inline-flex items-center gap-1 text-sm font-semibold',
                   isDark ? 'text-brand-gold-400 hover:text-brand-gold-300' : 'sm-link',

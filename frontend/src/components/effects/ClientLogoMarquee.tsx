@@ -2,7 +2,7 @@ import { resolveMediaUrl } from '@/utils/media';
 import { cn } from '@/utils/cn';
 
 interface ClientLogoMarqueeProps {
-  clients: { id: string; name: string; logoUrl?: string }[];
+  clients: { id: string; name: string; logoUrl?: string; location?: string }[];
   className?: string;
   variant?: 'light' | 'dark';
 }
@@ -33,27 +33,56 @@ export function ClientLogoMarquee({ clients, className, variant = 'light' }: Cli
         )}
       />
 
-      <div className="tech-marquee-track-slow flex w-max items-center gap-10 py-2">
+      <div className="tech-marquee-track-slow flex w-max items-center gap-5 py-3">
         {track.map((client, i) => (
           <div
             key={`${client.id}-${i}`}
             className={cn(
-              'flex h-14 w-36 shrink-0 items-center justify-center rounded-lg border px-4 transition-all duration-300',
+              'flex h-[9.5rem] w-[14.5rem] shrink-0 flex-col items-center justify-center gap-1.5 rounded-xl border px-5 shadow-md transition-all duration-300',
               variant === 'dark'
-                ? 'border-white/10 bg-white/5 grayscale hover:grayscale-0'
-                : 'border-slate-200/80 bg-white shadow-sm grayscale hover:grayscale-0 hover:shadow-md',
+                ? 'border-white/15 bg-white/10 hover:bg-white/15'
+                : 'border-slate-200 bg-white hover:border-brand-gold-400/50 hover:shadow-lg',
             )}
           >
-            {client.logoUrl ? (
-              <img
-                src={resolveMediaUrl(client.logoUrl)}
-                alt={client.name}
-                className="max-h-8 max-w-full object-contain"
-                loading="lazy"
-              />
-            ) : (
-              <span className="text-xs font-medium text-primary-700">{client.name}</span>
-            )}
+            <div className="flex h-16 w-full items-center justify-center">
+              {client.logoUrl ? (
+                <img
+                  src={resolveMediaUrl(client.logoUrl)}
+                  alt=""
+                  className="max-h-16 max-w-full object-contain"
+                  loading="lazy"
+                />
+              ) : (
+                <span
+                  className={cn(
+                    'text-lg font-semibold tracking-tight',
+                    variant === 'dark' ? 'text-white' : 'text-primary-800',
+                  )}
+                >
+                  {client.name.charAt(0)}
+                </span>
+              )}
+            </div>
+            <div className="w-full text-center">
+              <p
+                className={cn(
+                  'truncate text-sm font-semibold tracking-tight',
+                  variant === 'dark' ? 'text-slate-200' : 'text-primary-900',
+                )}
+                title={client.name}
+              >
+                {client.name}
+              </p>
+              <p
+                className={cn(
+                  'mt-0.5 h-4 truncate text-xs',
+                  variant === 'dark' ? 'text-slate-400' : 'text-slate-500',
+                )}
+                title={client.location}
+              >
+                {client.location || '\u00a0'}
+              </p>
+            </div>
           </div>
         ))}
       </div>

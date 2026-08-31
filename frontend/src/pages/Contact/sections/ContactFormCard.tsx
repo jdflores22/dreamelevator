@@ -17,7 +17,7 @@ const senderTypeValues = CONTACT_SENDER_TYPES.map((item) => item.value) as [
 const schema = z.object({
   name: z.string().min(2, 'Name is required'),
   email: z.string().email('Valid email required'),
-  companyName: z.string().min(2, 'Company name is required'),
+  companyName: z.string().min(2, 'Building or company is required'),
   senderType: z.enum(senderTypeValues, { message: 'Please select who is sending this message' }),
   subject: z.string().min(3, 'Subject is required'),
   body: z.string().min(10, 'Message must be at least 10 characters'),
@@ -56,7 +56,7 @@ export function ContactFormCard({
     <div
       id="contact-form"
       className={cn(
-        'rounded-2xl border p-6 shadow-sm sm:p-8',
+        'rounded-sm border p-5 shadow-sm sm:p-8',
         isDark ? 'border-white/15 bg-white/5' : 'border-slate-200 bg-white',
       )}
     >
@@ -127,7 +127,7 @@ export function ContactFormCard({
                       aria-checked={selected}
                       onClick={() => field.onChange(option.value)}
                       className={cn(
-                        'rounded-xl border px-3 py-3 text-left text-sm font-medium transition-all',
+                        'min-h-12 rounded-xl border px-3 py-3 text-left text-sm font-medium transition-all',
                         selected
                           ? isDark
                             ? 'border-brand-gold-400/60 bg-brand-gold-400/10 text-brand-gold-300'
@@ -154,7 +154,7 @@ export function ContactFormCard({
           <Input label="Email" type="email" error={errors.email?.message} {...register('email')} />
         </div>
         <Input
-          label="Company name"
+          label="Building or company"
           error={errors.companyName?.message}
           {...register('companyName')}
         />

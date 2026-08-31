@@ -44,7 +44,7 @@ function ToolbarButton({
       title={title}
       onClick={onClick}
       className={cn(
-        'rounded-md p-1.5 transition-colors',
+        'min-h-10 min-w-10 rounded-md p-2 transition-colors sm:min-h-0 sm:min-w-0 sm:p-1.5',
         active
           ? 'bg-primary-900 text-white'
           : 'text-slate-600 hover:bg-slate-100 hover:text-primary-900',

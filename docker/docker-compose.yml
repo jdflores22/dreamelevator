@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
-      MYSQL_DATABASE: transnet
+      MYSQL_DATABASE: dreamelevator
       MYSQL_USER: transnet
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-transnetpass}
     ports:
@@ -36,7 +36,7 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile.api
-    container_name: transnet-api
+    container_name: dreamelevator-api
     restart: unless-stopped
     depends_on:
       mysql:
@@ -46,12 +46,12 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:5000
-      ConnectionStrings__DefaultConnection: Server=mysql;Port=3306;Database=transnet;User=transnet;Password=${MYSQL_PASSWORD:-transnetpass};
+      ConnectionStrings__DefaultConnection: Server=mysql;Port=3306;Database=dreamelevator;User=transnet;Password=${MYSQL_PASSWORD:-transnetpass};
       ConnectionStrings__Redis: redis:6379
-      Jwt__Secret: ${JWT_SECRET:-TransNet-Super-Secret-Key-Min-32-Chars-Long!}
-      Jwt__RefreshSecret: ${JWT_REFRESH_SECRET:-TransNet-Refresh-Secret-Key-Min-32-Chars!}
-      Jwt__Issuer: TransNet
-      Jwt__Audience: TransNet
+      Jwt__Secret: ${JWT_SECRET:-DreamElevator-Super-Secret-Key-Min-32-Chars-Long!}
+      Jwt__RefreshSecret: ${JWT_REFRESH_SECRET:-DreamElevator-Refresh-Secret-Key-Min-32-Chars!}
+      Jwt__Issuer: DreamElevator.API
+      Jwt__Audience: DreamElevator.Client
       Cors__Origins: ${CORS_ORIGINS:-http://localhost:5173,http://localhost}
     ports:
       - "5000:5000"

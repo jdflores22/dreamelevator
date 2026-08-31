@@ -29,6 +29,11 @@ public interface IApplicationDbContext
     IQueryable<SiteSetting> SiteSettings { get; }
     IQueryable<SeoSetting> SeoSettings { get; }
     IQueryable<ActivityLog> ActivityLogs { get; }
+    IQueryable<InventoryPart> InventoryParts { get; }
+    IQueryable<InventoryIssuance> InventoryIssuances { get; }
+    IQueryable<Supplier> Suppliers { get; }
+    IQueryable<Employee> Employees { get; }
+    IQueryable<StockMovement> StockMovements { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     void Add<T>(T entity) where T : class;

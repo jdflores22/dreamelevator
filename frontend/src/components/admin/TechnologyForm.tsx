@@ -100,11 +100,11 @@ export function TechnologyForm({ item, isSubmitting, onCancel, onSubmit }: Techn
         )}
       />
 
-      <div className="flex justify-end gap-3 border-t border-slate-100 pt-4">
-        <Button type="button" variant="outline" onClick={onCancel}>
+      <div className="flex flex-col-reverse gap-2 border-t border-slate-100 pt-4 sm:flex-row sm:justify-end sm:gap-3">
+        <Button type="button" variant="outline" onClick={onCancel} className="w-full sm:w-auto">
           Cancel
         </Button>
-        <Button type="submit" isLoading={isSubmitting}>
+        <Button type="submit" isLoading={isSubmitting} className="w-full sm:w-auto">
           Save changes
         </Button>
       </div>

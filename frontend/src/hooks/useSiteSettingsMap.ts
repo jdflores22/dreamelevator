@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { publicApiClient } from '@/api/client';
 import type { ApiResponse, SiteSetting } from '@/types';
+import { applyBrandName } from '@/utils/brand';
 
 export function usePublicSiteSettings() {
   return useQuery({
@@ -26,7 +27,16 @@ export function useSiteSettingsMap() {
     return entries;
   }, [query.data]);
 
-  const get = (key: string, fallback = '') => map[key] ?? fallback;
+  const companyName = (map.company_name ?? '').trim();
+
+  const get = useCallback(
+    (key: string, fallback = '') => {
+      const raw = map[key] ?? fallback;
+      if (key === 'company_name' || !companyName) return raw;
+      return applyBrandName(raw, companyName);
+    },
+    [map, companyName],
+  );
 
   return { ...query, map, get };
 }

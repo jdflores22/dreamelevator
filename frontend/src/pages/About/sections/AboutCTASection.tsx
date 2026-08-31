@@ -13,7 +13,7 @@ export function AboutCTASection() {
   const title = get('about_cta_title', "We'd love to hear from you");
   const subtitle = get(
     'about_cta_subtitle',
-    "Tell us about your project — we'll get back to you as soon as possible.",
+    "Tell us about the building or the equipment — we will get back to you as soon as possible.",
   );
 
   return (
@@ -21,7 +21,7 @@ export function AboutCTASection() {
       <Container>
         <div
           className={cn(
-            'mx-auto max-w-3xl rounded-2xl border px-8 py-12 text-center sm:px-12 sm:py-14',
+            'mx-auto max-w-3xl rounded-sm border-l-[3px] border-brand-gold-500 border px-8 py-12 text-center sm:px-12 sm:py-14',
             isDark ? 'border-white/15 bg-white/5' : 'border-slate-200 bg-white shadow-sm',
           )}
         >

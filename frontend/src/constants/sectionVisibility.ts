@@ -12,6 +12,7 @@ export type SectionDarkBgGroup = {
 };
 
 export const HOME_SECTION_TOGGLES = [
+  { id: 'home_process', label: 'How we work', manageHint: 'Admin → Process steps' },
   { id: 'home_intro', label: 'Intro banner', manageHint: 'Settings → Site content' },
   { id: 'home_services', label: 'Services', manageHint: 'Admin → Services' },
   { id: 'home_stats', label: 'Stats counter', manageHint: 'Admin → Stats' },
@@ -21,7 +22,6 @@ export const HOME_SECTION_TOGGLES = [
   { id: 'home_products', label: 'Software products', manageHint: 'Admin → Products' },
   { id: 'home_industries', label: 'Sector expertise', manageHint: 'Admin → Industries' },
   { id: 'home_why', label: 'Why choose us', manageHint: 'Admin → Why choose us' },
-  { id: 'home_process', label: 'Development process', manageHint: 'Admin → Process steps' },
   { id: 'home_portfolio', label: 'Featured portfolio', manageHint: 'Admin → Portfolio' },
   { id: 'home_testimonials', label: 'Testimonials', manageHint: 'Admin → Testimonials' },
   { id: 'home_faq', label: 'FAQ', manageHint: 'Admin → FAQ' },
@@ -99,17 +99,17 @@ export const SECTION_DARK_BG_GROUPS: SectionDarkBgGroup[] = [
   {
     page: 'Homepage',
     toggles: [
+      { id: 'home_process', label: 'How we work', defaultDark: false },
       { id: 'home_intro', label: 'Intro banner', defaultDark: false },
       { id: 'home_stats', label: 'Stats counter', defaultDark: false },
       { id: 'home_services', label: 'Services', defaultDark: false },
       { id: 'home_portfolio', label: 'Featured portfolio', defaultDark: false },
       { id: 'home_clients', label: 'Trusted companies', defaultDark: false },
       { id: 'home_technologies', label: 'Technologies', defaultDark: false },
-      { id: 'home_featured_product', label: 'Featured product', defaultDark: true },
+      { id: 'home_featured_product', label: 'Featured product', defaultDark: false },
       { id: 'home_products', label: 'Software products', defaultDark: false },
       { id: 'home_industries', label: 'Sector expertise', defaultDark: false },
       { id: 'home_why', label: 'Why choose us', defaultDark: false },
-      { id: 'home_process', label: 'Development process', defaultDark: true },
       { id: 'home_testimonials', label: 'Testimonials', defaultDark: false },
       { id: 'home_faq', label: 'FAQ', defaultDark: false },
       { id: 'home_blog', label: 'Latest articles', defaultDark: false },
@@ -123,9 +123,11 @@ export const SECTION_DARK_BG_GROUPS: SectionDarkBgGroup[] = [
       { id: 'about_mission', label: 'Mission', defaultDark: false },
       { id: 'about_vision', label: 'Vision', defaultDark: false },
       { id: 'about_story', label: 'Our story', defaultDark: false },
+      { id: 'about_values', label: 'Core values', defaultDark: false },
+      { id: 'about_assessment', label: 'Free assessment', defaultDark: false },
       { id: 'about_stats', label: 'Stats showcase', defaultDark: false },
       { id: 'about_why', label: 'What we do', defaultDark: false },
-      { id: 'about_process', label: 'Development process', defaultDark: true },
+      { id: 'about_process', label: 'Development process', defaultDark: false },
       { id: 'about_industries', label: 'Sector expertise', defaultDark: false },
       { id: 'about_products_promo', label: 'Software products promo', defaultDark: true },
       { id: 'about_cta', label: 'Contact CTA', defaultDark: false },
@@ -135,9 +137,9 @@ export const SECTION_DARK_BG_GROUPS: SectionDarkBgGroup[] = [
     page: 'Services page',
     toggles: [
       { id: 'services_stats', label: 'Quick stats bar', defaultDark: false },
-      { id: 'services_list', label: 'Service offerings grid', defaultDark: false },
+      { id: 'services_list', label: 'Other services', defaultDark: false },
       { id: 'services_how_we_work', label: 'How we work', defaultDark: true },
-      { id: 'services_cta', label: 'Contact CTA', defaultDark: false },
+      { id: 'services_cta', label: 'Quote CTA', defaultDark: false },
     ],
   },
   {
@@ -161,7 +163,7 @@ export const SECTION_DARK_BG_GROUPS: SectionDarkBgGroup[] = [
     page: 'Products page',
     toggles: [
       { id: 'products_hero', label: 'Page hero', defaultDark: true },
-      { id: 'products_featured', label: 'Featured product spotlight', defaultDark: true },
+      { id: 'products_featured', label: 'Featured product spotlight', defaultDark: false },
       { id: 'products_catalog', label: 'Product catalog', defaultDark: false },
       { id: 'products_cta', label: 'Bottom call-to-action', defaultDark: false },
     ],

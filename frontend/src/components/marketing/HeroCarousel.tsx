@@ -78,14 +78,14 @@ export function HeroCarousel({
       </div>
 
       {total > 1 && (
-        <div className="mt-8 flex flex-wrap items-center gap-4">
+        <div className="mt-5 flex flex-wrap items-center gap-3 sm:mt-8 sm:gap-4">
           <div className="flex items-center gap-2">
             <button
               type="button"
               aria-label="Previous slide"
               onClick={() => go(-1)}
               className={cn(
-                'inline-flex h-9 w-9 items-center justify-center rounded-full border transition-colors',
+                'inline-flex h-9 w-9 items-center justify-center rounded-sm border transition-colors sm:h-11 sm:w-11',
                 isDark
                   ? 'border-white/20 text-white hover:bg-white/10'
                   : 'border-slate-200 text-primary-800 hover:bg-slate-50',
@@ -98,7 +98,7 @@ export function HeroCarousel({
               aria-label="Next slide"
               onClick={() => go(1)}
               className={cn(
-                'inline-flex h-9 w-9 items-center justify-center rounded-full border transition-colors',
+                'inline-flex h-9 w-9 items-center justify-center rounded-sm border transition-colors sm:h-11 sm:w-11',
                 isDark
                   ? 'border-white/20 text-white hover:bg-white/10'
                   : 'border-slate-200 text-primary-800 hover:bg-slate-50',

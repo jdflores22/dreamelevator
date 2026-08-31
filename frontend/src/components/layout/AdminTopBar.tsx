@@ -13,6 +13,7 @@ import {
   User as UserIcon,
 } from 'lucide-react';
 import { adminNavIndex, adminPageTitles } from '@/constants/navigation';
+import { formatRoleLabel } from '@/constants/roles';
 import { useAuth, useDashboardStats } from '@/api/hooks';
 import { useAuthStore } from '@/store/authStore';
 import { cn } from '@/utils/cn';
@@ -46,14 +47,14 @@ export function AdminTopBar({ onMenuClick }: AdminTopBarProps) {
   const isDashboard = pathname === '/admin';
 
   return (
-    <header className="sticky top-0 z-30 shrink-0 border-b border-slate-200/80 bg-white/90 backdrop-blur-md">
-      <div className="flex h-14 items-center justify-between gap-3 px-4 sm:px-6">
+    <header className="sticky top-0 z-30 shrink-0 border-b border-slate-200/80 bg-white/90 pt-[env(safe-area-inset-top)] backdrop-blur-md">
+      <div className="flex h-14 items-center justify-between gap-2 px-3 sm:gap-3 sm:px-6">
         {/* Left: menu + breadcrumb */}
         <div className="flex min-w-0 items-center gap-3">
           <button
             type="button"
             onClick={onMenuClick}
-            className="rounded-lg p-2 text-slate-600 transition-colors hover:bg-slate-100 lg:hidden"
+            className="min-h-11 min-w-11 rounded-lg p-2 text-slate-600 transition-colors hover:bg-slate-100 lg:hidden"
             aria-label="Open menu"
           >
             <Menu className="h-5 w-5" />
@@ -100,7 +101,7 @@ export function AdminTopBar({ onMenuClick }: AdminTopBarProps) {
             <UserMenu
               name={`${user.firstName ?? ''} ${user.lastName ?? ''}`.trim()}
               email={user.email}
-              role={user.role}
+              role={formatRoleLabel(user.role)}
               initials={`${user.firstName?.[0] ?? ''}${user.lastName?.[0] ?? ''}`}
               onSignOut={() => logoutMutation.mutate()}
             />

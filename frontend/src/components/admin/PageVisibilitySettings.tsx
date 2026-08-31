@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Eye, Search } from 'lucide-react';
 import { useCreateSeoSetting, useSeoSettings, useUpdateSeoSetting } from '@/api/hooks';
+import { useCompanyBrand } from '@/hooks/useCompanyBrand';
 import type { SeoSetting } from '@/types';
 import {
   PAGE_VISIBILITY_GROUPS,
@@ -17,6 +18,7 @@ import { SectionToggleSwitch } from '@/components/admin/SectionToggleSwitch';
 import { cn } from '@/utils/cn';
 
 export function PageVisibilitySettings() {
+  const { name: companyName } = useCompanyBrand();
   const { data: pages, isLoading } = useSeoSettings();
   const createMutation = useCreateSeoSetting();
   const updateMutation = useUpdateSeoSetting();
@@ -39,9 +41,9 @@ export function PageVisibilitySettings() {
         const meta = PAGE_VISIBILITY_LABELS[pageKey];
         return createMutation.mutateAsync({
           pageKey,
-          title: `${meta.label} | TRANS-NET`,
-          description: `${meta.label} — TRANS-NET`,
-          keywords: 'software development, TRANS-NET',
+          title: companyName ? `${meta.label} | ${companyName}` : meta.label,
+          description: companyName ? `${meta.label} — ${companyName}` : meta.label,
+          keywords: companyName ? `software development, ${companyName}` : 'software development',
           ogImage: '',
           isPublished: true,
           maintenanceMessage: '',
@@ -50,7 +52,7 @@ export function PageVisibilitySettings() {
     ).finally(() => {
       syncingRef.current = false;
     });
-  }, [isLoading, pages, createMutation]);
+  }, [isLoading, pages, createMutation, companyName]);
 
   const pageByKey = useMemo(
     () => new Map((pages ?? []).map((p) => [p.pageKey, p])),

@@ -46,7 +46,7 @@ export default function ServicesAdminPage() {
             { name: 'title', label: 'Title' },
             { name: 'slug', label: 'Slug' },
             { name: 'shortDescription', label: 'Short Description', type: 'textarea', rows: 2 },
-            { name: 'description', label: 'Description', type: 'textarea' },
+            { name: 'description', label: 'Description', type: 'richtext' },
             { name: 'icon', label: 'Icon' },
             { name: 'sortOrder', label: 'Sort Order', type: 'number' },
             { name: 'isPublished', label: 'Published', type: 'checkbox' },

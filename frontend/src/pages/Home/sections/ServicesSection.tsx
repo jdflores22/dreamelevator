@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, ArrowUpRight, Code2, Layers, Smartphone, Wrench } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, ArrowUpDown, Building2, Cog, Wrench } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useServices } from '@/api/hooks';
 import { Container } from '@/components/common/Container';
@@ -10,17 +10,17 @@ import { Spinner } from '@/components/ui/Spinner';
 import { useSectionContent, usePageSectionTheme } from '@/hooks/useSectionContent';
 import { cn } from '@/utils/cn';
 
-const icons = [Code2, Smartphone, Layers, Wrench];
+const icons = [Building2, ArrowUpDown, Cog, Wrench];
 
-const GOLD_STROKE = '#d4a017';
+const GOLD_STROKE = '#f7971f';
 
 export function ServicesSection() {
   const { data: services, isLoading } = useServices();
-  const displayServices = services?.slice(0, 4) ?? [];
+  const displayServices = [...(services ?? [])].sort((a, b) => a.sortOrder - b.sortOrder);
   const section = useSectionContent('home_services', {
     eyebrow: 'Services',
-    title: 'Engineering aligned to your business',
-    subtitle: 'From discovery to delivery and support — we help you build software that performs in production.',
+    title: 'Elevators, escalators, and complete support',
+    subtitle: 'Supply, installation, modernization, maintenance, parts, and structural shafts — tailored to each building.',
   });
   const theme = usePageSectionTheme('home_services');
   const isDark = theme === 'dark';
@@ -45,7 +45,7 @@ export function ServicesSection() {
             No services published yet.
           </p>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {displayServices.map((service, index) => {
               const Icon = icons[index % icons.length];
 
@@ -60,13 +60,13 @@ export function ServicesSection() {
                   <Link
                     to={`/services/${service.slug}`}
                     className={cn(
-                      'group relative flex h-full flex-col overflow-hidden rounded-2xl border p-6 transition-all duration-300',
+                      'group relative flex h-full flex-col overflow-hidden rounded-sm border p-6 transition-all duration-300',
                       isDark
                         ? 'border-white/10 bg-white/[0.03] hover:border-brand-gold-400/40 hover:bg-white/[0.06]'
-                        : 'border-slate-200 bg-white hover:border-brand-gold-400/60 hover:shadow-[0_20px_45px_-25px_rgba(10,26,46,0.45)]',
+                        : 'border-slate-200 bg-white hover:border-brand-gold-400/60 hover:shadow-[0_20px_45px_-25px_rgba(10,49,68,0.45)]',
                     )}
                   >
-                    <span className="absolute inset-x-0 top-0 h-1 origin-left scale-x-0 bg-gradient-to-r from-primary-600 via-brand-gold-500 to-brand-red-500 transition-transform duration-300 group-hover:scale-x-100" />
+                    <span className="absolute inset-x-0 top-0 h-1 origin-left scale-x-0 bg-gradient-to-r from-primary-500 via-brand-gold-500 to-primary-600 transition-transform duration-300 group-hover:scale-x-100" />
 
                     <div className="mb-5 flex items-start justify-between gap-3">
                       <HexagonBadge
@@ -130,7 +130,7 @@ export function ServicesSection() {
           <Link
             to="/services"
             className={cn(
-              'inline-flex items-center gap-2 rounded-full border px-6 py-3 text-sm font-semibold transition-all duration-300',
+              'inline-flex items-center gap-2 rounded-sm border px-6 py-3 text-sm font-semibold transition-all duration-300',
               isDark
                 ? 'border-white/15 text-white hover:border-brand-gold-400/60 hover:bg-white/5'
                 : 'border-slate-300 text-primary-900 hover:border-brand-gold-400/60 hover:bg-white hover:shadow-sm',

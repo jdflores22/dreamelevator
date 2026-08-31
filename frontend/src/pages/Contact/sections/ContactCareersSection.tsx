@@ -28,7 +28,7 @@ export function ContactCareersSection() {
       <Container>
         <div
           className={cn(
-            'relative overflow-hidden rounded-2xl border px-8 py-10 sm:px-12 sm:py-12',
+            'relative overflow-hidden rounded-sm border-l-[3px] border-brand-gold-500 border px-8 py-10 sm:px-12 sm:py-12',
             isDark
               ? 'border-white/15 bg-gradient-to-br from-primary-950/80 via-primary-900/60 to-primary-950/80'
               : 'border-slate-200 bg-white shadow-sm',
@@ -79,7 +79,7 @@ export function ContactCareersSection() {
               {openCount > 0 && (
                 <div
                   className={cn(
-                    'mt-5 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm',
+                    'mt-5 inline-flex items-center gap-2 rounded-sm border px-4 py-2 text-sm',
                     isDark
                       ? 'border-white/15 bg-white/5 text-slate-200'
                       : 'border-slate-200 bg-slate-50 text-slate-700',

@@ -11,11 +11,13 @@ import { Card, CardBody, CardTitle } from '@/components/ui/Card';
 import { PageLoader } from '@/components/ui/Spinner';
 import { estimateReadTime } from '@/utils/readTime';
 import { resolveMediaUrl } from '@/utils/media';
+import { useCompanyBrand } from '@/hooks/useCompanyBrand';
 
 export default function BlogDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const { data: blog, isLoading, isError } = useBlog(slug || '');
   const { data: allBlogs } = useBlogs();
+  const { name: companyName } = useCompanyBrand();
 
   if (isLoading) return <PageLoader />;
   if (isError || !blog) {
@@ -41,13 +43,13 @@ export default function BlogDetailPage() {
     description: blog.excerpt,
     datePublished: blog.publishedAt ?? blog.createdAt,
     dateModified: blog.updatedAt,
-    author: { '@type': 'Organization', name: 'TRANS-NET' },
+    author: { '@type': 'Organization', name: companyName || undefined },
   };
 
   return (
     <>
       <SEOHead
-        title={blog.seoTitle || `${blog.title} | TRANS-NET Blog`}
+        title={blog.seoTitle || blog.title}
         description={blog.seoDescription || blog.excerpt}
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />

@@ -12,7 +12,7 @@ import { cn } from '@/utils/cn';
 const brandBorders = [
   'border-b-brand-gold-500',
   'border-b-primary-700',
-  'border-b-brand-red-500',
+  'border-b-primary-500',
 ] as const;
 
 export default function IndustriesPage() {
@@ -28,8 +28,8 @@ export default function IndustriesPage() {
     <>
       <PageSEO
         pageKey="industries"
-        title="Industries | TRANS-NET"
-        description="Industries we serve with tailored software solutions."
+        title="Industries"
+        description="Residential, commercial, healthcare, hospitality, mixed-use, and industrial buildings."
       />
       <PageHero title={hero.title} subtitle={hero.subtitle} />
       <section className={sectionSurfaceClass(darkList)}>
@@ -63,7 +63,7 @@ export default function IndustriesPage() {
                     <h3 className="text-lg font-semibold text-primary-900">{industry.name}</h3>
                     <p className="mt-3 text-sm text-slate-600">
                       {industry.shortDescription ||
-                        `We deliver specialized software solutions addressing the unique challenges of the ${industry.name.toLowerCase()} sector — from compliance and security to operational efficiency.`}
+                        `Vertical transportation specified for the unique demands of the ${industry.name.toLowerCase()} sector.`}
                     </p>
                   </CardBody>
                 </Card>

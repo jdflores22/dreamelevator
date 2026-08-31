@@ -5,7 +5,7 @@ export function Table({ className, children }: { className?: string; children: R
   return (
     <div
       className={cn(
-        'overflow-x-auto rounded-xl border border-slate-200/80 bg-white shadow-sm',
+        'overflow-x-auto overscroll-x-contain rounded-xl border border-slate-200/80 bg-white shadow-sm [-webkit-overflow-scrolling:touch]',
         className,
       )}
     >

@@ -8,6 +8,7 @@ public interface ISiteSettingService
     Task<List<SiteSettingDto>> GetAllAsync(bool adminView, CancellationToken cancellationToken = default);
     Task<SiteSettingDto?> GetByKeyAsync(string key, bool adminView, CancellationToken cancellationToken = default);
     Task<SiteSettingDto> CreateAsync(CreateSiteSettingDto dto, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<SiteSettingDto>> UpsertManyAsync(IReadOnlyList<CreateSiteSettingDto> items, CancellationToken cancellationToken = default);
     Task<SiteSettingDto?> UpdateAsync(Guid id, UpdateSiteSettingDto dto, CancellationToken cancellationToken = default);
     Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
 }

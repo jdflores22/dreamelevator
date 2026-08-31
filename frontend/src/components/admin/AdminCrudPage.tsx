@@ -65,6 +65,15 @@ export interface AdminCrudPageProps<T extends { id: string }> {
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50];
 
+function isMediaKey(key: string) {
+  return /url|image|json|logo|icon|avatar/i.test(key);
+}
+
+function columnContent<T extends { id: string }>(item: T, col?: AdminColumn<T>) {
+  if (!col) return null;
+  return col.render ? col.render(item) : String((item as Record<string, unknown>)[col.key] ?? '');
+}
+
 type StatusFilter = 'all' | 'published' | 'draft';
 type SortDir = 'asc' | 'desc';
 
@@ -116,8 +125,6 @@ function ReorderList<T extends { id: string }>({
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [overIndex, setOverIndex] = useState<number | null>(null);
 
-  // Prefer a human-readable text column for the label (skip image/media columns).
-  const isMediaKey = (key: string) => /url|image|json|logo|icon|avatar/i.test(key);
   const textColumns = columns.filter((c) => !isMediaKey(c.key));
   const primary = textColumns[0] ?? columns[0];
   const secondary = textColumns.find((c) => c.key !== primary.key);
@@ -132,10 +139,7 @@ function ReorderList<T extends { id: string }>({
     });
   };
 
-  const label = (item: T, col?: AdminColumn<T>) => {
-    if (!col) return null;
-    return col.render ? col.render(item) : String((item as Record<string, unknown>)[col.key] ?? '');
-  };
+  const label = (item: T, col?: AdminColumn<T>) => columnContent(item, col);
 
   return (
     <div className="p-4 sm:p-6">
@@ -383,7 +387,7 @@ export function AdminCrudPage<T extends { id: string }>({
             )}
           </p>
 
-          <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
+          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
             {hasStatus && onBulkSetPublished && selectedIds.size > 0 && (
               <>
                 <Button
@@ -469,6 +473,80 @@ export function AdminCrudPage<T extends { id: string }>({
             />
           ) : (
             <>
+              <div className="divide-y divide-slate-100 md:hidden">
+                {paged.map((item) => {
+                  const textColumns = columns.filter((c) => !isMediaKey(c.key));
+                  const primary = textColumns[0] ?? columns[0];
+                  const rest = textColumns
+                    .filter((c) => c.key !== primary?.key && c.key !== 'isPublished')
+                    .slice(0, 3);
+                  const published = (item as Record<string, unknown>).isPublished;
+                  return (
+                    <article key={item.id} className="px-4 py-3.5">
+                      <div className="flex items-start gap-3">
+                        {hasStatus && onBulkSetPublished && (
+                          <input
+                            type="checkbox"
+                            checked={selectedIds.has(item.id)}
+                            onChange={() => toggleSelect(item.id)}
+                            aria-label={`Select ${singular}`}
+                            className="mt-1 h-4 w-4 rounded border-slate-300"
+                          />
+                        )}
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-start justify-between gap-2">
+                            <p className="truncate text-sm font-semibold text-primary-900">
+                              {columnContent(item, primary)}
+                            </p>
+                            {typeof published === 'boolean' && (
+                              <span
+                                className={cn(
+                                  'shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide',
+                                  published
+                                    ? 'bg-emerald-50 text-emerald-700'
+                                    : 'bg-slate-100 text-slate-500',
+                                )}
+                              >
+                                {published ? 'Live' : 'Draft'}
+                              </span>
+                            )}
+                          </div>
+                          {rest.map((col) => (
+                            <div key={col.key} className="mt-1 truncate text-xs text-slate-500">
+                              <span className="text-slate-400">{col.label}: </span>
+                              {columnContent(item, col)}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="mt-3 flex justify-end gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => openEdit(item)}
+                          aria-label={`Edit ${singular}`}
+                          className="min-h-10 text-primary-700 hover:bg-primary-50"
+                        >
+                          <Pencil className="h-4 w-4" />
+                          Edit
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setDeleteTarget(item)}
+                          aria-label={`Delete ${singular}`}
+                          className="min-h-10 hover:bg-brand-red-500/10"
+                        >
+                          <Trash2 className="h-4 w-4 text-brand-red-500" />
+                          Delete
+                        </Button>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+
+              <div className="hidden md:block">
               <Table className="rounded-none border-0 shadow-none">
                 <THead>
                   <TR>
@@ -561,9 +639,10 @@ export function AdminCrudPage<T extends { id: string }>({
                   ))}
                 </TBody>
               </Table>
+              </div>
 
               {total > pageSize && (
-                <div className="flex flex-col items-center justify-between gap-3 border-t border-slate-100 px-5 py-3 sm:flex-row sm:px-6">
+                <div className="flex flex-col items-stretch justify-between gap-3 border-t border-slate-100 px-4 py-3 sm:flex-row sm:items-center sm:px-6">
                   <p className="text-xs text-slate-500">
                     Showing{' '}
                     <span className="font-medium tabular-nums text-primary-900">{start + 1}</span>–

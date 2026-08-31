@@ -12,8 +12,8 @@ export function AboutWhySection() {
   const isDark = useSectionDarkBackground('about_why');
   const section = useSectionContent('about_why', {
     eyebrow: 'What we do',
-    title: 'We help companies build better software',
-    subtitle: 'Custom development, dedicated teams, and long-term support tailored to your goals.',
+    title: 'Vertical transportation for every building',
+    subtitle: 'Elevators, escalators, modernization, and maintenance specified for how each facility actually operates.',
   });
 
   return (

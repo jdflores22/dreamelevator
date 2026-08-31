@@ -8,6 +8,7 @@ import { MaintenancePage } from '@/components/common/MaintenancePage';
 import { StickyCta } from '@/components/common/StickyCta';
 import { AnalyticsScript } from '@/components/common/AnalyticsScript';
 import { OrganizationJsonLd } from '@/components/common/OrganizationJsonLd';
+import { BrandDocumentHead } from '@/components/common/BrandDocumentHead';
 import { PageLoader } from '@/components/ui/Spinner';
 import { pathnameToPageKey } from '@/constants/pageVisibility';
 import { usePageVisibility } from '@/hooks/usePageVisibility';
@@ -36,21 +37,31 @@ export function PublicLayout() {
   if (pageKey && !isLoading && !isPublished) {
     return (
       <div className="flex min-h-screen flex-col">
+        <BrandDocumentHead includeTitle={false} />
         <Header />
         <main className="flex-1">
           <MaintenancePage pageKey={pageKey} message={maintenanceMessage} />
         </main>
-        <Footer />
+        <div className="pb-20 sm:pb-0">
+          <Footer />
+        </div>
+        <StickyCta />
       </div>
     );
   }
 
   if (pageKey && isLoading) {
-    return <PageLoader />;
+    return (
+      <>
+        <BrandDocumentHead includeTitle={false} />
+        <PageLoader />
+      </>
+    );
   }
 
   return (
     <div className="flex min-h-screen flex-col">
+      <BrandDocumentHead includeTitle={false} />
       <OrganizationJsonLd />
       <AnalyticsScript />
       <Header />
@@ -65,7 +76,9 @@ export function PublicLayout() {
         <Outlet />
       </motion.main>
       {pathname !== '/' && <PreFooterCTA />}
-      <Footer />
+      <div className="pb-20 sm:pb-0">
+        <Footer />
+      </div>
       <StickyCta />
     </div>
   );

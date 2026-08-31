@@ -6,6 +6,7 @@ import {
   useDeleteUser,
   useRoles,
 } from '@/api/hooks';
+import { formatRoleLabel, sortRoles } from '@/constants/roles';
 import type { User } from '@/types';
 import { AdminCrudPage } from '@/components/admin/AdminCrudPage';
 import { Badge } from '@/components/ui/Badge';
@@ -59,9 +60,9 @@ function UserForm({ item, isSubmitting, onCancel, onSubmit }: UserFormProps) {
               {...field}
               className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-primary-900 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
             >
-              {(roles ?? []).map((role) => (
+              {sortRoles(roles ?? []).map((role) => (
                 <option key={role.id} value={role.id}>
-                  {role.name}
+                  {formatRoleLabel(role.name)}
                 </option>
               ))}
             </select>
@@ -85,11 +86,11 @@ function UserForm({ item, isSubmitting, onCancel, onSubmit }: UserFormProps) {
         )}
       />
 
-      <div className="flex justify-end gap-3 border-t border-slate-100 pt-4">
-        <Button type="button" variant="outline" onClick={onCancel}>
+      <div className="flex flex-col-reverse gap-2 border-t border-slate-100 pt-4 sm:flex-row sm:justify-end sm:gap-3">
+        <Button type="button" variant="outline" onClick={onCancel} className="w-full sm:w-auto">
           Cancel
         </Button>
-        <Button type="submit" isLoading={isSubmitting}>
+        <Button type="submit" isLoading={isSubmitting} className="w-full sm:w-auto">
           Save changes
         </Button>
       </div>
@@ -109,7 +110,7 @@ export default function UsersAdminPage() {
   return (
     <AdminCrudPage<User>
       title="Users"
-      description="Manage admin users and roles"
+      description="Assign Developer, Staff, Accounting, or Admin access"
       items={items}
       isLoading={isLoading}
       columns={[
@@ -123,7 +124,9 @@ export default function UsersAdminPage() {
           key: 'roleId',
           label: 'Role',
           render: (item) => (
-            <Badge variant="accent">{item.role?.name ?? roleName(item.roleId)}</Badge>
+            <Badge variant="accent">
+              {formatRoleLabel(item.roleName ?? item.role?.name ?? roleName(item.roleId))}
+            </Badge>
           ),
         },
         {

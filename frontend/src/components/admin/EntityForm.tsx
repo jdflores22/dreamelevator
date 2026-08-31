@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { RichTextEditor } from '@/components/admin/RichTextEditor';
-import { SettingsImageField } from '@/components/admin/SettingsImageField';
+import { ImageUploadField } from '@/components/admin/ImageUploadField';
 import { useUnsavedChanges } from '@/hooks/useUnsavedChanges';
 
 export interface FormField {
@@ -12,6 +12,7 @@ export interface FormField {
   type?: 'text' | 'textarea' | 'number' | 'checkbox' | 'richtext' | 'image' | 'select';
   rows?: number;
   folder?: string;
+  preview?: 'cover' | 'logo';
   options?: { value: string | number; label: string }[];
   hint?: string;
 }
@@ -91,11 +92,15 @@ export function EntityForm({
               name={field.name}
               control={control}
               render={({ field: f }) => (
-                <SettingsImageField
+                <ImageUploadField
                   label={field.label}
-                  value={String(f.value ?? '')}
-                  onChange={f.onChange}
+                  value={f.value ? [String(f.value)] : []}
+                  onChange={(urls) => f.onChange(urls[0] ?? '')}
                   folder={field.folder ?? 'pages'}
+                  multiple={false}
+                  preview={field.preview ?? 'cover'}
+                  hint={field.hint}
+                  uploadLabel="Upload"
                 />
               )}
             />
@@ -173,11 +178,11 @@ export function EntityForm({
           />
         );
       })}
-      <div className="flex justify-end gap-3 border-t border-slate-100 pt-4">
-        <Button type="button" variant="outline" onClick={onCancel}>
+      <div className="flex flex-col-reverse gap-2 border-t border-slate-100 pt-4 sm:flex-row sm:justify-end sm:gap-3">
+        <Button type="button" variant="outline" onClick={onCancel} className="w-full sm:w-auto">
           Cancel
         </Button>
-        <Button type="submit" isLoading={isSubmitting}>
+        <Button type="submit" isLoading={isSubmitting} className="w-full sm:w-auto">
           Save changes
         </Button>
       </div>

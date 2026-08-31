@@ -24,20 +24,19 @@ export default function HomePage() {
     <>
       <PageSEO
         pageKey="home"
-        title="TRANS-NET | Enterprise Software Development"
-        description="Custom software development for organizations that need reliable delivery, skilled engineers, and a long-term partnership."
+        description="Elevator and escalator solutions from installation to long-term service."
       />
       <Hero />
       <div id="home-content" className="sm-page">
-        {sections.home_intro && <HomeIntroBanner />}
         {sections.home_clients && <TrustedCompanies />}
-        {sections.home_services && <ServicesSection />}
+        {sections.home_process && <DevProcess />}
+        {sections.home_intro && <HomeIntroBanner />}
+        {sections.home_services && !sections.home_intro && <ServicesSection />}
         {sections.home_technologies && <TechnologiesSection />}
         {sections.home_featured_product && <FeaturedProduct />}
         {sections.home_products && <SoftwareSolutions />}
         {sections.home_industries && <Industries />}
         {sections.home_why && <WhyChooseUs />}
-        {sections.home_process && <DevProcess />}
         {sections.home_portfolio && <PortfolioSection />}
         {sections.home_testimonials && <Testimonials />}
         {sections.home_stats && <Stats />}

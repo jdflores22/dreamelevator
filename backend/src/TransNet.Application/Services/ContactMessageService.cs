@@ -34,6 +34,10 @@ public class ContactMessageService : IContactMessageService
 
     private static readonly HashSet<string> AllowedSenderTypes = new(StringComparer.Ordinal)
     {
+        "building_owner",
+        "contractor",
+        "facility",
+        "other",
         "trucker",
         "shipping_lines",
         "container_yard",
@@ -44,11 +48,11 @@ public class ContactMessageService : IContactMessageService
     {
         var senderType = dto.SenderType?.Trim() ?? string.Empty;
         if (!AllowedSenderTypes.Contains(senderType))
-            throw new ArgumentException("Invalid sender type. Choose Trucker, Shipping Lines, Container Yard, or Private Company.");
+            throw new ArgumentException("Invalid sender type.");
 
         var companyName = dto.CompanyName?.Trim() ?? string.Empty;
         if (string.IsNullOrWhiteSpace(companyName))
-            throw new ArgumentException("Company name is required.");
+            throw new ArgumentException("Building or company name is required.");
 
         var entity = new ContactMessage
         {
@@ -75,7 +79,7 @@ public class ContactMessageService : IContactMessageService
             adminEmail,
             $"New contact message from {dto.Name}",
             $"<p><strong>{dto.Name}</strong> ({dto.Email}) submitted a message.</p>" +
-            $"<p><strong>Company:</strong> {companyName}</p>" +
+            $"<p><strong>Building / company:</strong> {companyName}</p>" +
             $"<p><strong>Sender type:</strong> {senderLabel}</p>" +
             $"<p><strong>Subject:</strong> {dto.Subject}</p><p>{dto.Body}</p>",
             cancellationToken);
@@ -107,6 +111,10 @@ public class ContactMessageService : IContactMessageService
 
     private static string FormatSenderType(string? value) => value switch
     {
+        "building_owner" => "Building owner / property manager",
+        "contractor" => "Contractor / developer",
+        "facility" => "Facility or maintenance team",
+        "other" => "Other",
         "trucker" => "Trucker",
         "shipping_lines" => "Shipping Lines",
         "container_yard" => "Container Yard",

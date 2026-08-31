@@ -1,54 +1,56 @@
 @import 'tailwindcss';
 
 @theme {
-  /* Navy blue */
-  --color-primary-50: #e8eef6;
-  --color-primary-100: #c5d4e8;
-  --color-primary-200: #9fb8d4;
-  --color-primary-300: #789cbd;
-  --color-primary-400: #5a86ad;
-  --color-primary-500: #3d6f96;
-  --color-primary-600: #2d5580;
-  --color-primary-700: #1a3a66;
-  --color-primary-800: #0f2744;
-  --color-primary-900: #0a1a2e;
-  --color-primary-950: #050d17;
+  /* Brand blue — logo cyan (#0098cd) with deep teal ink for headers */
+  --color-primary-50: #eef8fc;
+  --color-primary-100: #d2eef8;
+  --color-primary-200: #a8dff0;
+  --color-primary-300: #6cc9e4;
+  --color-primary-400: #2bb3d6;
+  --color-primary-500: #0098cd;
+  --color-primary-600: #047cae;
+  --color-primary-700: #03658f;
+  --color-primary-800: #0a4a66;
+  --color-primary-900: #0a3144;
+  --color-primary-950: #061f2c;
 
-  /* Brand red */
+  /* Danger only — not a brand color */
   --color-brand-red-400: #ff4d4d;
   --color-brand-red-500: #e31e24;
   --color-brand-red-600: #c41920;
   --color-brand-red-700: #a01418;
 
-  /* Yellow gold */
-  --color-brand-gold-300: #ffd966;
-  --color-brand-gold-400: #f5c842;
-  --color-brand-gold-500: #d4a017;
-  --color-brand-gold-600: #b8890f;
+  /* Brand orange — logo hexagon (#f7971f); token name kept for existing classes */
+  --color-brand-gold-300: #ffd08a;
+  --color-brand-gold-400: #f8b44a;
+  --color-brand-gold-500: #f7971f;
+  --color-brand-gold-600: #de7a12;
 
-  /* Legacy accent mapped to gold for existing components */
-  --color-accent-50: #fffbeb;
-  --color-accent-100: #fef3c7;
-  --color-accent-200: #fde68a;
-  --color-accent-300: #fcd34d;
-  --color-accent-400: #f5c842;
-  --color-accent-500: #d4a017;
-  --color-accent-600: #b8890f;
-  --color-accent-700: #926f0c;
-  --color-accent-800: #78590a;
-  --color-accent-900: #634908;
+  --color-accent-50: #fff7ed;
+  --color-accent-100: #ffedd5;
+  --color-accent-200: #fed7aa;
+  --color-accent-300: #ffd08a;
+  --color-accent-400: #f8b44a;
+  --color-accent-500: #f7971f;
+  --color-accent-600: #de7a12;
+  --color-accent-700: #b85f0c;
+  --color-accent-800: #944b0a;
+  --color-accent-900: #7a3d0c;
 
-  --font-sans: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Barlow Condensed', ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
     @apply bg-white text-slate-800 font-normal antialiased;
     font-family: var(--font-sans);
+    overflow-x: clip;
   }
 
   ::selection {
@@ -73,28 +75,26 @@
     @apply h-0.5 w-full;
     background: linear-gradient(
       90deg,
-      var(--color-primary-700) 0%,
+      var(--color-primary-600) 0%,
       var(--color-brand-gold-500) 55%,
-      var(--color-primary-500) 100%
+      var(--color-primary-400) 100%
     );
   }
 
   .circuit-bg {
     background-image:
-      radial-gradient(circle at 20% 30%, rgba(61, 111, 150, 0.25) 0%, transparent 45%),
-      radial-gradient(circle at 80% 70%, rgba(227, 30, 36, 0.08) 0%, transparent 40%),
-      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    background-size: auto, auto, 48px 48px, 48px 48px;
+      linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+    background-size: 48px 100%;
+    background-position: center;
   }
 
   .accent-line {
-    @apply mx-auto mt-4 h-1 w-16 rounded-full;
-    background: linear-gradient(90deg, var(--color-primary-600) 0%, var(--color-brand-gold-500) 100%);
+    @apply mt-5 h-[3px] w-12 rounded-none;
+    background: var(--color-brand-gold-500);
   }
 
   .section-padding {
-    @apply py-16 sm:py-20 lg:py-24;
+    @apply py-10 sm:py-20 lg:py-24;
   }
 
   .sm-page {
@@ -102,7 +102,7 @@
   }
 
   .sm-card {
-    @apply rounded-xl border border-slate-200 bg-white transition-colors duration-200;
+    @apply rounded-sm border border-slate-200 bg-white transition-colors duration-200;
   }
 
   .sm-card:hover {
@@ -111,28 +111,26 @@
 
   .sm-hero-bg {
     background:
-      radial-gradient(ellipse 80% 55% at 100% 0%, rgba(212, 160, 23, 0.06), transparent 55%),
-      radial-gradient(ellipse 70% 50% at 0% 100%, rgba(26, 58, 102, 0.05), transparent 50%),
+      radial-gradient(ellipse 80% 55% at 100% 0%, rgba(247, 151, 31, 0.07), transparent 55%),
+      radial-gradient(ellipse 70% 50% at 0% 100%, rgba(0, 152, 205, 0.06), transparent 50%),
       #ffffff;
   }
 
   .hero-heading-bg {
-    background-color: #f8fafc;
+    background-color: #f7fafc;
     background-image:
-      radial-gradient(ellipse 90% 70% at 100% 0%, rgba(212, 160, 23, 0.14), transparent 52%),
-      radial-gradient(ellipse 75% 55% at 0% 100%, rgba(26, 58, 102, 0.1), transparent 50%),
-      linear-gradient(135deg, rgba(232, 238, 246, 0.9) 0%, rgba(255, 255, 255, 0.95) 45%, #ffffff 100%),
-      linear-gradient(rgba(26, 58, 102, 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(26, 58, 102, 0.04) 1px, transparent 1px);
-    background-size: auto, auto, auto, 48px 48px, 48px 48px;
+      linear-gradient(90deg, rgba(4, 124, 174, 0.06) 1px, transparent 1px),
+      linear-gradient(180deg, rgba(247, 151, 31, 0.12) 0 3px, transparent 3px);
+    background-size: 72px 100%, 100% 100%;
+    background-position: 12% 0, 0 0;
   }
 
   .pro-eyebrow {
-    @apply text-xs font-semibold uppercase tracking-[0.16em] text-primary-600;
+    @apply font-display text-[13px] font-semibold uppercase tracking-[0.22em] text-primary-600;
   }
 
   .pro-eyebrow-dark {
-    @apply text-xs font-semibold uppercase tracking-[0.16em] text-brand-gold-400;
+    @apply font-display text-[13px] font-semibold uppercase tracking-[0.22em] text-brand-gold-400;
   }
 
   .sm-link {
@@ -140,7 +138,7 @@
   }
 
   .pro-card {
-    @apply rounded-xl border border-slate-200 bg-white transition-colors duration-200;
+    @apply rounded-sm border border-slate-200 bg-white transition-colors duration-200;
   }
 
   .pro-card:hover {
@@ -150,16 +148,12 @@
   }
 
   .trust-pill {
-    @apply inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs font-medium text-slate-200 backdrop-blur-sm;
+    @apply font-display inline-flex items-center gap-2 rounded-sm border border-white/15 bg-white/5 px-4 py-1.5 text-[12px] font-medium uppercase tracking-[0.12em] text-slate-200 backdrop-blur-sm;
   }
 
   .trust-pill::before {
     content: '';
-    @apply h-1.5 w-1.5 shrink-0 rounded-full bg-brand-red-500;
-  }
-
-  .hexagon-frame {
-    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    @apply h-3 w-[2px] shrink-0 bg-brand-gold-500;
   }
 
   .logo-checkerboard {
@@ -177,17 +171,17 @@
   .admin-shell-bg {
     background-color: #f4f6f9;
     background-image:
-      radial-gradient(circle at 100% 0%, rgba(212, 160, 23, 0.06) 0%, transparent 40%),
-      radial-gradient(circle at 0% 100%, rgba(10, 26, 46, 0.04) 0%, transparent 45%),
-      linear-gradient(rgba(10, 26, 46, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(10, 26, 46, 0.03) 1px, transparent 1px);
+      radial-gradient(circle at 100% 0%, rgba(247, 151, 31, 0.07) 0%, transparent 40%),
+      radial-gradient(circle at 0% 100%, rgba(10, 49, 68, 0.04) 0%, transparent 45%),
+      linear-gradient(rgba(10, 49, 68, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(10, 49, 68, 0.03) 1px, transparent 1px);
     background-size: auto, auto, 32px 32px, 32px 32px;
   }
 
   .admin-sidebar-bg {
     background-color: var(--color-primary-950);
     background-image:
-      radial-gradient(circle at 0% 0%, rgba(212, 160, 23, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 0% 0%, rgba(247, 151, 31, 0.1) 0%, transparent 50%),
       linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
     background-size: auto, 24px 24px, 24px 24px;
@@ -213,8 +207,8 @@
   }
 
   @keyframes node-pulse {
-    0%, 100% { opacity: 0.5; transform: scale(1); box-shadow: 0 0 6px rgba(212, 160, 23, 0.4); }
-    50% { opacity: 1; transform: scale(1.35); box-shadow: 0 0 14px rgba(212, 160, 23, 0.75); }
+    0%, 100% { opacity: 0.5; transform: scale(1); box-shadow: 0 0 6px rgba(247, 151, 31, 0.4); }
+    50% { opacity: 1; transform: scale(1.35); box-shadow: 0 0 14px rgba(247, 151, 31, 0.75); }
   }
 
   @keyframes line-pulse {
@@ -243,10 +237,8 @@
   }
 
   .tech-grid-animated {
-    background-image:
-      linear-gradient(rgba(212, 160, 23, 0.07) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(212, 160, 23, 0.07) 1px, transparent 1px);
-    background-size: 40px 40px;
+    background-image: linear-gradient(90deg, rgba(247, 151, 31, 0.08) 1px, transparent 1px);
+    background-size: 48px 100%;
     animation: grid-drift 24s linear infinite;
   }
 
@@ -263,8 +255,12 @@
   }
 
   .tech-hex-float {
-    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    animation: hex-float 8s ease-in-out infinite;
+    animation: none;
+  }
+
+  .tech-eyebrow-brackets::before,
+  .tech-eyebrow-brackets::after {
+    content: none;
   }
 
   .tech-cursor {
@@ -285,21 +281,14 @@
 
   .tech-mesh-light {
     background-image:
-      radial-gradient(circle at 20% 20%, rgba(26, 58, 102, 0.04) 0%, transparent 50%),
-      linear-gradient(rgba(10, 26, 46, 0.025) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(10, 26, 46, 0.025) 1px, transparent 1px);
-    background-size: auto, 32px 32px, 32px 32px;
-    animation: mesh-shift 30s linear infinite;
+      linear-gradient(90deg, rgba(10, 49, 68, 0.04) 1px, transparent 1px);
+    background-size: 56px 100%;
   }
 
   .tech-mesh-dark {
     background-image:
-      radial-gradient(circle at 80% 20%, rgba(212, 160, 23, 0.06) 0%, transparent 45%),
-      radial-gradient(circle at 15% 80%, rgba(227, 30, 36, 0.07) 0%, transparent 40%),
-      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    background-size: auto, 48px 48px, 48px 48px;
-    animation: mesh-shift 36s linear infinite;
+      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 56px 100%;
   }
 
   .tech-card-glow {
@@ -308,21 +297,8 @@
 
   .tech-card-glow:hover {
     box-shadow:
-      0 0 0 1px rgba(212, 160, 23, 0.25),
-      0 8px 32px rgba(10, 26, 46, 0.12);
-  }
-
-  .tech-eyebrow-brackets::before,
-  .tech-eyebrow-brackets::after {
-    @apply font-mono text-brand-gold-500/70;
-  }
-
-  .tech-eyebrow-brackets::before {
-    content: '[ ';
-  }
-
-  .tech-eyebrow-brackets::after {
-    content: ' ]';
+      0 0 0 1px rgba(247, 151, 31, 0.28),
+      0 8px 32px rgba(10, 49, 68, 0.12);
   }
 
   @media (prefers-reduced-motion: reduce) {

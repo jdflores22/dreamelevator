@@ -148,7 +148,7 @@ export default function MediaLibraryAdminPage() {
                   alt={file.fileName}
                   className="h-full w-full object-contain p-3"
                 />
-                <div className="absolute right-2 top-2 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                <div className="absolute right-2 top-2 flex gap-1 opacity-100 md:opacity-0 md:transition-opacity md:group-hover:opacity-100">
                   <button
                     type="button"
                     onClick={() => {

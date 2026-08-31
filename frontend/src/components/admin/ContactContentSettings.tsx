@@ -28,7 +28,7 @@ const CONTACT_SECTIONS = [
     defaults: {
       title: 'Contact Us',
       subtitle:
-        "We'd love to hear about your project — tell us your goals and we'll help you plan the right path forward.",
+        'Visit is by appointment only. Call, message, or request a quote — we will connect you with the right team.',
     },
     extraFields: [{ key: 'contact_response_promise', label: 'Response promise badge', default: 'We typically respond within one business day.' }],
   },
@@ -37,17 +37,17 @@ const CONTACT_SECTIONS = [
     label: 'Contact form & details',
     group: 'contact' as const,
     defaults: {
-      eyebrow: 'Contact details',
-      title: 'Let’s start a conversation',
+      eyebrow: 'Las Piñas office',
+      title: 'Let’s start with an assessment',
       subtitle:
-        'Whether you need a product demo, custom development, or ongoing support — reach out and we’ll connect you with the right team.',
+        'Tell us about the building, the equipment, or the service you need — we will connect you with the right team.',
     },
     extraFields: [
       { key: 'contact_form_title', label: 'Form title', default: 'Send us a message' },
       {
         key: 'contact_form_subtitle',
         label: 'Form subtitle',
-        default: 'Fill out the form and our team will get back to you within one business day.',
+        default: 'Share the site, equipment type, and what you need — installation, modernization, or maintenance.',
       },
     ],
   },
@@ -57,8 +57,8 @@ const CONTACT_SECTIONS = [
     group: 'contact' as const,
     defaults: {
       eyebrow: 'What happens next',
-      title: 'A clear path from first message to next steps',
-      subtitle: 'We keep the process straightforward so you know what to expect after reaching out.',
+      title: 'From first message to site assessment',
+      subtitle: 'A straightforward path so you know what to expect after reaching out.',
     },
   },
   {
@@ -67,8 +67,8 @@ const CONTACT_SECTIONS = [
     group: 'contact' as const,
     defaults: {
       eyebrow: 'FAQ',
-      title: 'Common questions before you reach out',
-      subtitle: 'Quick answers about engagement models, timelines, and how we work with new clients.',
+      title: 'Common questions',
+      subtitle: 'Brands we service, free assessments, shafts, modernization, and how to request a quote.',
     },
   },
   {
@@ -77,8 +77,8 @@ const CONTACT_SECTIONS = [
     group: 'contact' as const,
     defaults: {
       eyebrow: 'Visit us',
-      title: 'Find our office',
-      subtitle: 'Drop by during business hours or use the map for directions.',
+      title: 'Las Piñas office',
+      subtitle: 'Visit is by appointment only. Use the map for directions to Equitable Village, Talon Kuatro.',
     },
   },
   {
@@ -87,9 +87,9 @@ const CONTACT_SECTIONS = [
     group: 'contact' as const,
     defaults: {
       eyebrow: 'Join our team',
-      title: 'Build enterprise software with us',
+      title: 'Join the DEEC team',
       subtitle:
-        'We’re always looking for engineers, designers, and consultants who care about quality delivery and long-term partnerships.',
+        'We’re looking for people who care about safe installation, reliable service, and long-term client relationships.',
     },
     extraFields: [
       { key: 'contact_careers_primary_label', label: 'Primary button', default: 'View open roles' },
@@ -102,20 +102,20 @@ const EXPECT_STEPS = [
   {
     titleKey: 'contact_expect_step1_title',
     textKey: 'contact_expect_step1_text',
-    titleDefault: 'Send your message',
-    textDefault: 'Tell us about your project, timeline, and goals — the more context, the better we can help.',
+    titleDefault: 'Send your inquiry',
+    textDefault: 'Tell us the building, equipment brand or type, and whether you need supply, modernization, or service.',
   },
   {
     titleKey: 'contact_expect_step2_title',
     textKey: 'contact_expect_step2_text',
     titleDefault: 'We review & respond',
-    textDefault: 'A solutions consultant reviews your inquiry and replies within one business day.',
+    textDefault: 'Our team replies within one business day and, when applicable, schedules a free Metro Manila assessment.',
   },
   {
     titleKey: 'contact_expect_step3_title',
     textKey: 'contact_expect_step3_text',
-    titleDefault: 'Plan next steps',
-    textDefault: "We'll schedule a call to scope requirements and recommend the best path forward.",
+    titleDefault: 'Survey & proposal',
+    textDefault: 'We confirm shaft and site conditions, then recommend equipment or a maintenance plan.',
   },
 ] as const;
 

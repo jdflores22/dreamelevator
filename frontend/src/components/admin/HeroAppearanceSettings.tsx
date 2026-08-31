@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Palette } from 'lucide-react';
-import { useSiteSettings, useUpdateSiteSetting, useCreateSiteSetting } from '@/api/hooks';
+import { useSiteSettings, useUpsertSiteSettings } from '@/api/hooks';
 import {
   HERO_COLOR_FIELDS,
   HERO_PRESET_OPTIONS,
@@ -37,7 +37,7 @@ function ColorField({
   value: string;
   onChange: (value: string) => void;
 }) {
-  const pickerValue = isValidHexColor(value) ? normalizeHexColor(value, '#000000') : '#0a1a2e';
+  const pickerValue = isValidHexColor(value) ? normalizeHexColor(value, '#000000') : '#0a3144';
 
   return (
     <div className="grid gap-2 sm:grid-cols-[1fr_auto] sm:items-end">
@@ -46,7 +46,7 @@ function ColorField({
         label={label}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder="#0a1a2e"
+        placeholder="#0a3144"
       />
       <label className="flex h-[42px] w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white sm:w-14">
         <input
@@ -63,8 +63,7 @@ function ColorField({
 
 export function HeroAppearanceSettings({ variant = 'panel' }: { variant?: 'panel' | 'compact' }) {
   const { data: settings, isLoading } = useSiteSettings();
-  const updateMutation = useUpdateSiteSetting();
-  const createMutation = useCreateSiteSetting();
+  const upsertMutation = useUpsertSiteSettings();
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -78,6 +77,7 @@ export function HeroAppearanceSettings({ variant = 'panel' }: { variant?: 'panel
     return initial;
   });
   const [overlay, setOverlay] = useState(getValue(settings, 'hero_image_overlay') || '85');
+  const [overlayColor, setOverlayColor] = useState(getValue(settings, 'hero_overlay_color'));
 
   const applyPresetColors = (next: HeroThemePreset) => {
     const tokens = HERO_THEME_PRESETS[next];
@@ -90,27 +90,22 @@ export function HeroAppearanceSettings({ variant = 'panel' }: { variant?: 'panel
     setPreset(next);
   };
 
-  const saveField = async (key: string, value: string, group: string) => {
-    const existing = settings?.find((s) => s.key === key);
-    if (existing) {
-      await updateMutation.mutateAsync({ id: existing.id, data: { value, isPublic: true } });
-    } else {
-      await createMutation.mutateAsync({ key, value, group, isPublic: true });
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSaved(false);
     setSaving(true);
     try {
-      await saveField('hero_theme_preset', preset, 'home');
-      await saveField('hero_image_overlay', overlay, 'home');
-      await Promise.all(
-        HERO_COLOR_FIELDS.map((field) =>
-          saveField(field.key, colors[field.key]?.trim() ?? '', 'home'),
-        ),
-      );
+      await upsertMutation.mutateAsync([
+        { key: 'hero_theme_preset', value: preset, group: 'home', isPublic: true },
+        { key: 'hero_image_overlay', value: overlay, group: 'home', isPublic: true },
+        { key: 'hero_overlay_color', value: overlayColor.trim(), group: 'home', isPublic: true },
+        ...HERO_COLOR_FIELDS.map((field) => ({
+          key: field.key,
+          value: colors[field.key]?.trim() ?? '',
+          group: 'home',
+          isPublic: true,
+        })),
+      ]);
       setSaved(true);
     } finally {
       setSaving(false);
@@ -125,7 +120,7 @@ export function HeroAppearanceSettings({ variant = 'panel' }: { variant?: 'panel
     );
   }
 
-  const isSaving = saving || createMutation.isPending || updateMutation.isPending;
+  const isSaving = saving || upsertMutation.isPending;
   const showColorFields = preset === 'custom' || preset === 'light' || preset === 'navy' || preset === 'gold';
 
   const form = (
@@ -153,17 +148,26 @@ export function HeroAppearanceSettings({ variant = 'panel' }: { variant?: 'panel
           </p>
         </div>
 
-        <Input
-          name="hero_image_overlay"
-          label="Background image overlay strength (0–100)"
-          type="number"
-          min={0}
-          max={100}
-          value={overlay}
-          onChange={(e) => setOverlay(e.target.value)}
-        />
+        <div className="grid gap-4 sm:grid-cols-2">
+          <ColorField
+            label="Overlay color"
+            name="hero_overlay_color"
+            value={overlayColor}
+            onChange={setOverlayColor}
+          />
+          <Input
+            name="hero_image_overlay"
+            label="Overlay strength (0–100)"
+            type="number"
+            min={0}
+            max={100}
+            value={overlay}
+            onChange={(e) => setOverlay(e.target.value)}
+          />
+        </div>
         <p className="text-xs text-slate-500">
-          Higher values lighten the photo so headline text stays readable.
+          Overlay color sits on top of the hero photo. Leave it blank to match the hero background.
+          Higher strength hides more of the photo on the left so the headline stays readable.
         </p>
 
         {showColorFields && (
@@ -230,7 +234,7 @@ export function HeroAppearanceSettings({ variant = 'panel' }: { variant?: 'panel
     return (
       <CompactSettingsSection
         title="Hero appearance"
-        description="Colors, overlay strength, and live preview."
+        description="Colors, overlay color & strength, and live preview."
         formId="hero-appearance-form"
         isSaving={isSaving}
         saved={saved}
@@ -244,7 +248,7 @@ export function HeroAppearanceSettings({ variant = 'panel' }: { variant?: 'panel
     <SettingsPanel
       icon={Palette}
       title="Hero appearance"
-      description="Calibrate homepage hero colors — background, text, accents, and image overlay."
+      description="Calibrate homepage hero colors — background, text, accents, overlay color, and strength."
       footer={
         <>
           <Button type="submit" form="hero-appearance-form" isLoading={isSaving} size="sm">

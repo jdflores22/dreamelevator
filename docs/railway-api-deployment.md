@@ -1,6 +1,6 @@
-# Deploying the TransNet API to Railway
+# Deploying the DreamElevator API to Railway
 
-This guide walks through deploying the **TransNet .NET 7 Web API** (`backend/src/TransNet.API`) to [Railway](https://railway.com), backed by a Railway‑managed MySQL database (and, optionally, Redis).
+This guide walks through deploying the **DreamElevator .NET 7 Web API** (`backend/src/DreamElevator.API`) to [Railway](https://railway.com), backed by a Railway‑managed MySQL database (and, optionally, Redis).
 
 > **Why Docker?** Railway's native builder (Railpack/Nixpacks) does **not** support .NET, so a `Dockerfile` is required. This repo already ships one at [`docker/Dockerfile.api`](../docker/Dockerfile.api), so no changes to the app are strictly required to deploy.
 
@@ -92,8 +92,8 @@ ConnectionStrings__DefaultConnection=Server=${{MySQL.MYSQLHOST}};Port=${{MySQL.M
 # --- JWT (use your generated secrets) ---
 Jwt__Secret=<your-32+char-access-secret>
 Jwt__RefreshSecret=<your-32+char-refresh-secret>
-Jwt__Issuer=TransNet.API
-Jwt__Audience=TransNet.Client
+Jwt__Issuer=DreamElevator.API
+Jwt__Audience=DreamElevator.Client
 Jwt__AccessTokenExpirationHours=1
 ```
 
@@ -140,8 +140,8 @@ RAILWAY_DOCKERFILE_PATH=docker/Dockerfile.api
 ConnectionStrings__DefaultConnection=Server=${{MySQL.MYSQLHOST}};Port=${{MySQL.MYSQLPORT}};Database=${{MySQL.MYSQLDATABASE}};User=${{MySQL.MYSQLUSER}};Password=${{MySQL.MYSQLPASSWORD}};
 Jwt__Secret=<your-32+char-access-secret>
 Jwt__RefreshSecret=<your-32+char-refresh-secret>
-Jwt__Issuer=TransNet.API
-Jwt__Audience=TransNet.Client
+Jwt__Issuer=DreamElevator.API
+Jwt__Audience=DreamElevator.Client
 Jwt__AccessTokenExpirationHours=1
 Cors__Origins__0=https://lightgray-alpaca-580456.hostingersite.com
 ConnectionStrings__Redis=${{Redis.REDISHOST}}:${{Redis.REDISPORT}},password=${{Redis.REDISPASSWORD}},ssl=false
@@ -166,8 +166,8 @@ Smtp__EnableSsl=true
 | `ConnectionStrings__DefaultConnection` | ✅ | `${{MySQL.*}}` refs | Pomelo/MySQL format; uses private host. |
 | `Jwt__Secret` | ✅ | ≥ 32 random chars | Access‑token signing key. |
 | `Jwt__RefreshSecret` | ✅ | ≥ 32 random chars | Refresh‑token signing key. |
-| `Jwt__Issuer` | ✅ | `TransNet.API` | Must match token validation. |
-| `Jwt__Audience` | ✅ | `TransNet.Client` | Must match token validation. |
+| `Jwt__Issuer` | ✅ | `DreamElevator.API` | Must match token validation. |
+| `Jwt__Audience` | ✅ | `DreamElevator.Client` | Must match token validation. |
 | `Jwt__AccessTokenExpirationHours` | ⬜ | `1` | Defaults handled in config if omitted. |
 | `Cors__Origins__0`, `__1`, … | ✅² | front‑end URLs | ²Required for the browser front end to call the API. |
 | `ConnectionStrings__Redis` | ⬜ | `${{Redis.*}}` refs | Omit → in‑memory cache fallback. |

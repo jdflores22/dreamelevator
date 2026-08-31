@@ -47,6 +47,16 @@ function buildHeroBackground(colors: HeroColorTokens, isDark: boolean): string {
   return layers.join(', ');
 }
 
+function buildImageOverlay(color: string, veil: number, isDark: boolean): string {
+  const left = veil === 0 ? 0 : Math.min(0.98, 0.58 + veil * 0.45);
+  const mid = veil === 0 ? 0 : Math.min(0.94, 0.42 + veil * 0.5);
+  const right = veil === 0 ? 0 : Math.max(0.28, veil * 0.48);
+  return [
+    `linear-gradient(90deg, ${hexToRgba(color, left)} 0%, ${hexToRgba(color, mid)} 46%, ${hexToRgba(color, right)} 100%)`,
+    `linear-gradient(180deg, ${hexToRgba(color, isDark ? 0.45 : 0.28)} 0%, transparent 22%, transparent 82%, ${hexToRgba(color, isDark ? 0.3 : 0.16)} 100%)`,
+  ].join(', ');
+}
+
 export function useHeroAppearance() {
   const { get } = useSiteSettingsMap();
   const preset = resolvePreset(get('hero_theme_preset', 'light'));
@@ -73,7 +83,14 @@ export function useHeroAppearance() {
     ? Math.min(100, Math.max(0, overlayRaw)) / 100
     : 0.85;
 
+  const overlayStored = get('hero_overlay_color', '').trim();
+  const imageOverlayColor = overlayStored && isValidHexColor(overlayStored)
+    ? normalizeHexColor(overlayStored, colors.bg)
+    : colors.bg;
+
   const isDark = preset === 'navy' || (preset === 'custom' && isDarkColor(colors.bg));
+
+  const imageOverlayStyle = buildImageOverlay(imageOverlayColor, imageOverlayOpacity, isDark);
 
   const mainStyle: CSSProperties = {
     backgroundColor: colors.bg,
@@ -101,6 +118,8 @@ export function useHeroAppearance() {
     colors,
     isDark,
     imageOverlayOpacity,
+    imageOverlayColor,
+    imageOverlayStyle,
     mainStyle,
     cssVars,
     colorFieldKeys: HERO_COLOR_FIELDS,

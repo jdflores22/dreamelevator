@@ -20,14 +20,14 @@ export function Industries() {
 
   const section = useSectionContent('home_industries', {
     eyebrow: 'Industries',
-    title: 'Sector Expertise',
-    subtitle: 'Deep domain knowledge across diverse industries.',
+    title: 'Buildings we serve',
+    subtitle: 'Residential, commercial, healthcare, hospitality, mixed-use, and industrial facilities.',
   });
 
   const theme = usePageSectionTheme('home_industries');
 
   return (
-    <PageSection sectionId="home_industries" variant="muted" className="!py-20">
+    <PageSection sectionId="home_industries" variant="muted" className="!py-10 sm:!py-20">
       <Container>
         <SectionHeading eyebrow={section.eyebrow} title={section.title} subtitle={section.subtitle} theme={theme} />
         {isLoading ? (
@@ -59,7 +59,7 @@ export function Industries() {
                     <h3 className="font-medium text-primary-900">{industry.name}</h3>
                     <p className="mt-2 text-sm text-slate-600">
                       {industry.shortDescription ||
-                        `Custom software solutions tailored for ${industry.name.toLowerCase()} challenges.`}
+                        `Vertical transportation specified for ${industry.name.toLowerCase()} buildings.`}
                     </p>
                   </CardBody>
                 </Card>

@@ -10,9 +10,9 @@ import { cn } from '@/utils/cn';
 export function WhyChooseUs() {
   const { data: highlights, isLoading } = useCompanyHighlights();
   const section = useSectionContent('home_why', {
-    eyebrow: 'Why TRANS-NET',
-    title: 'Built around what matters to you',
-    subtitle: 'Engagements tied to delivery milestones, transparent scope, and outcomes you can measure.',
+    eyebrow: 'Why us',
+    title: 'Integrity, discipline, efficiency, accountability',
+    subtitle: 'The standards that guide how we specify, install, and maintain every system.',
   });
   const theme = usePageSectionTheme('home_why');
   const isDark = theme === 'dark';

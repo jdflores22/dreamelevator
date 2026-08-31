@@ -25,6 +25,7 @@ import {
 import { resolveHeaderAppearance } from '@/hooks/useHeaderAppearance';
 import { resolveHeaderBrandingText } from '@/hooks/useHeaderBrandingText';
 import { resolveMediaUrl } from '@/utils/media';
+import { isLegacyLogoPath } from '@/utils/brand';
 import { isTransparentLogoUrl } from '@/utils/logo';
 import { isValidHexColor, normalizeHexColor } from '@/utils/color';
 import { cn } from '@/utils/cn';
@@ -33,7 +34,6 @@ import apiClient from '@/api/client';
 const LOGO_KEY = 'company_logo';
 const NAME_KEY = 'company_name';
 const SUB_NAME_KEY = 'company_tagline';
-const DEFAULT_LOGO = '/logo.png';
 
 function getSettingValue(settings: { key: string; value: string }[] | undefined, key: string) {
   return settings?.find((s) => s.key === key)?.value ?? '';
@@ -101,7 +101,10 @@ export function BrandingSettings() {
   const logoSetting = settings?.find((s) => s.key === LOGO_KEY);
   const nameSetting = settings?.find((s) => s.key === NAME_KEY);
   const subNameSetting = settings?.find((s) => s.key === SUB_NAME_KEY);
-  const logoUrl = resolveMediaUrl(logoSetting?.value || DEFAULT_LOGO);
+  const logoUrl =
+    logoSetting?.value && !isLegacyLogoPath(logoSetting.value)
+      ? resolveMediaUrl(logoSetting.value)
+      : '';
   const logoMedia = settings?.find((s) => s.key === 'company_logo_media')?.value ?? 'png';
   const logoIsTransparent = isTransparentLogoUrl(logoUrl, logoMedia);
 
@@ -132,8 +135,8 @@ export function BrandingSettings() {
     textColorStateSynced.current = true;
   }, [settings]);
 
-  const displayName = previewName || nameSetting?.value || 'TRANS-NET';
-  const displayTagline = previewTagline || subNameSetting?.value || 'Software Development Services';
+  const displayName = previewName || nameSetting?.value || '';
+  const displayTagline = previewTagline || subNameSetting?.value || '';
 
   const headerPreview = resolveHeaderAppearance((key, fallback = '') => {
     if (key === HEADER_STYLE_KEY) return headerPreset;
@@ -245,13 +248,15 @@ export function BrandingSettings() {
             >
               <div className="flex h-16 items-center justify-between gap-4 px-6">
                 <div className="flex items-center gap-3">
-                  <CompanyLogoImage
-                    src={logoUrl}
-                    alt="Logo preview"
-                    size="md"
-                    mediaHint={logoMedia}
-                    bare={logoIsTransparent || headerPreview.isDark}
-                  />
+                  {logoUrl ? (
+                    <CompanyLogoImage
+                      src={logoUrl}
+                      alt="Logo preview"
+                      size="md"
+                      mediaHint={logoMedia}
+                      bare={logoIsTransparent || headerPreview.isDark}
+                    />
+                  ) : null}
                   <CompanyBrandText
                     companyName={displayName}
                     tagline={displayTagline}
@@ -347,7 +352,7 @@ export function BrandingSettings() {
                   label="Custom navigation color"
                   value={headerColor}
                   onChange={(e) => setHeaderColor(e.target.value)}
-                  placeholder="#0a1a2e"
+                  placeholder="#0a3144"
                 />
                 <label className="flex h-[42px] w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white sm:w-14">
                   <input
@@ -367,7 +372,7 @@ export function BrandingSettings() {
                 <p className="mt-1 text-xs text-slate-500">
                   Colors for the company name and tagline in the top navigation only. Leave blank
                   for automatic colors that match your header style. Use a hyphen in the company
-                  name (e.g. TRANS-NET) to split primary and accent colors.
+                  name (e.g. DREAM-ELEVATOR) to split primary and accent colors.
                 </p>
               </div>
               {HEADER_TEXT_COLOR_FIELDS.map((field) => {
@@ -428,15 +433,15 @@ export function BrandingSettings() {
             <Input
               name={NAME_KEY}
               label="Company name"
-              defaultValue={nameSetting?.value ?? 'TRANS-NET'}
-              placeholder="TRANS-NET"
+              defaultValue={nameSetting?.value ?? ''}
+              placeholder="Company name"
               onChange={(e) => setPreviewName(e.target.value)}
             />
             <Input
               name={SUB_NAME_KEY}
               label="Sub company name"
-              defaultValue={subNameSetting?.value ?? 'Software Development Services'}
-              placeholder="Software Development Services"
+              defaultValue={subNameSetting?.value ?? ''}
+              placeholder="Elevator & Escalator Corp."
               onChange={(e) => setPreviewTagline(e.target.value)}
             />
           </form>
@@ -487,7 +492,7 @@ export function BrandingSettings() {
                   size="sm"
                   disabled={uploading}
                   onClick={() => {
-                    void saveSetting(LOGO_KEY, DEFAULT_LOGO, 'branding');
+                    void saveSetting(LOGO_KEY, '', 'branding');
                     void saveSetting('company_logo_media', 'png', 'branding');
                   }}
                 >

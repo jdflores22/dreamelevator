@@ -3,7 +3,7 @@ import type { CompanyHighlight } from '@/types';
 import { HexagonBadge } from '@/components/marketing/HexagonBadge';
 import { cn } from '@/utils/cn';
 
-const GOLD_STROKE = '#d4a017';
+const GOLD_STROKE = '#f7971f';
 
 function HighlightCard({
   item,
@@ -21,10 +21,10 @@ function HighlightCard({
       viewport={{ once: true }}
       transition={{ delay: displayIndex * 0.05, duration: 0.4 }}
       className={cn(
-        'group relative flex h-full flex-col overflow-hidden rounded-2xl border p-6 transition-all duration-300',
+        'group relative flex h-full flex-col overflow-hidden rounded-sm border p-6 transition-all duration-300',
         isDark
           ? 'border-white/10 bg-white/[0.03] hover:border-brand-gold-400/40 hover:bg-white/[0.06]'
-          : 'border-slate-200 bg-white hover:-translate-y-1 hover:border-brand-gold-400/60 hover:shadow-[0_24px_50px_-30px_rgba(10,26,46,0.5)]',
+          : 'border-slate-200 bg-white hover:-translate-y-1 hover:border-brand-gold-400/60 hover:shadow-[0_24px_50px_-30px_rgba(10,49,68,0.5)]',
       )}
     >
       <div className="mb-5">

@@ -6,24 +6,30 @@ import { useSectionContent, useSectionDarkBackground } from '@/hooks/useSectionC
 import { useSiteSettingsMap } from '@/hooks/useSiteSettingsMap';
 import { sectionSurfaceClass, sectionTheme } from '@/utils/sectionSurface';
 import { formatMapSearchHref, resolveGoogleMapEmbedUrl } from '@/utils/media';
+import { deecCopy } from '@/utils/deecCopy';
 import { cn } from '@/utils/cn';
 
 export function ContactMapSection() {
   const isDark = useSectionDarkBackground('contact_map');
   const theme = sectionTheme(isDark);
   const { get } = useSiteSettingsMap();
-  const section = useSectionContent('contact_map', {
-    eyebrow: 'Visit us',
-    title: 'Find our office',
-    subtitle: 'Drop by during business hours or use the map for directions.',
-  });
+  const raw = useSectionContent('contact_map');
+  const section = {
+    eyebrow: deecCopy(raw.eyebrow, 'Visit us'),
+    title: deecCopy(raw.title, 'Las Piñas office'),
+    subtitle: deecCopy(
+      raw.subtitle,
+      'Visit is by appointment only. Use the map for directions to Equitable Village, Talon Kuatro.',
+    ),
+  };
 
-  const address = get('company_address', 'Global Headquarters');
-  const companyName = get('company_name', 'TRANS-NET');
+  const address = deecCopy(get('company_address'), '');
+  const companyName = get('company_name');
+  const tagline = get('company_tagline');
   const embedUrl = resolveGoogleMapEmbedUrl(
     address,
     get('contact_map_embed_url', ''),
-    `${companyName} Software Development Services Philippines`,
+    [companyName, tagline, 'Philippines'].filter(Boolean).join(' '),
   );
   const mapsHref = formatMapSearchHref(address);
 

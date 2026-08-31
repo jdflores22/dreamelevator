@@ -5,17 +5,22 @@ import { Container } from '@/components/common/Container';
 import { Button } from '@/components/ui/Button';
 import { usePageHeroContent, useSectionDarkBackground } from '@/hooks/useSectionContent';
 import { useSiteSettingsMap } from '@/hooks/useSiteSettingsMap';
+import { useCompanyBrand } from '@/hooks/useCompanyBrand';
+import { deecCopy } from '@/utils/deecCopy';
 import { cn } from '@/utils/cn';
 
 export function ContactHero() {
   const isDark = useSectionDarkBackground('contact_hero', true);
   const { get } = useSiteSettingsMap();
-  const hero = usePageHeroContent('contact_page', {
-    title: 'Contact Us',
-    subtitle: "We'd love to hear about your project — tell us your goals and we'll help you plan the right path forward.",
-  });
-  const responsePromise = get(
-    'contact_response_promise',
+  const { name: companyName } = useCompanyBrand();
+  const hero = usePageHeroContent('contact_page');
+  const title = deecCopy(hero.title, 'Contact us');
+  const subtitle = deecCopy(
+    hero.subtitle,
+    'Visit is by appointment only. Call, message, or request a quote — we will connect you with the right team.',
+  );
+  const responsePromise = deecCopy(
+    get('contact_response_promise'),
     'We typically respond within one business day.',
   );
 
@@ -65,10 +70,10 @@ export function ContactHero() {
               isDark ? 'text-brand-gold-400' : 'pro-eyebrow mb-0',
             )}
           >
-            Get in touch
+            {companyName || 'Get in touch'}
           </p>
           <h1 className="mt-4 text-[2rem] font-semibold leading-[1.1] tracking-tight sm:text-5xl lg:text-[3rem]">
-            {hero.title}
+            {title}
           </h1>
           <p
             className={cn(
@@ -76,13 +81,13 @@ export function ContactHero() {
               isDark ? 'text-slate-300' : 'text-slate-600',
             )}
           >
-            {hero.subtitle}
+            {subtitle}
           </p>
 
           {responsePromise && (
             <div
               className={cn(
-                'mt-6 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm',
+                'mt-6 inline-flex items-center gap-2 rounded-sm border px-4 py-2 text-sm',
                 isDark
                   ? 'border-white/15 bg-white/5 text-slate-200'
                   : 'border-slate-200 bg-slate-50 text-slate-700',

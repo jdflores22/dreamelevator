@@ -5,13 +5,13 @@ export const HEADER_COMPANY_TAGLINE_COLOR_KEY = 'header_company_tagline_color';
 export const HEADER_TEXT_DEFAULTS = {
   light: {
     name: '#ffffff',
-    accent: '#f5c842',
+    accent: '#f8b44a',
     tagline: '#cbd5e1',
   },
   dark: {
-    name: '#0a1a2e',
-    accent: '#d4a017',
-    tagline: '#2d5580',
+    name: '#0a3144',
+    accent: '#f7971f',
+    tagline: '#047cae',
   },
 } as const;
 

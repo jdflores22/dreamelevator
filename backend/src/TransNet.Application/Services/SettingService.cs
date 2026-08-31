@@ -48,6 +48,61 @@ public class SiteSettingService : ISiteSettingService
         return Map(entity);
     }
 
+    public async Task<IReadOnlyList<SiteSettingDto>> UpsertManyAsync(
+        IReadOnlyList<CreateSiteSettingDto> items,
+        CancellationToken cancellationToken = default)
+    {
+        if (items.Count == 0)
+            return Array.Empty<SiteSettingDto>();
+
+        var keys = items
+            .Select(i => i.Key?.Trim())
+            .Where(k => !string.IsNullOrWhiteSpace(k))
+            .Select(k => k!)
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
+
+        var existing = await _context.SiteSettings
+            .Where(s => keys.Contains(s.Key))
+            .ToDictionaryAsync(s => s.Key, cancellationToken);
+
+        var results = new List<SiteSetting>();
+        foreach (var dto in items)
+        {
+            var key = dto.Key?.Trim();
+            if (string.IsNullOrWhiteSpace(key))
+                continue;
+
+            if (existing.TryGetValue(key, out var entity))
+            {
+                var skipSecret = SmtpSettingsKeys.IsSecretKey(entity.Key)
+                    && (dto.Value == "********" || string.IsNullOrWhiteSpace(dto.Value));
+                if (!skipSecret)
+                    entity.Value = dto.Value;
+                entity.Group = string.IsNullOrWhiteSpace(dto.Group) ? entity.Group : dto.Group;
+                entity.IsPublic = dto.IsPublic;
+                entity.UpdatedAt = DateTime.UtcNow;
+                results.Add(entity);
+            }
+            else
+            {
+                var created = new SiteSetting
+                {
+                    Key = key,
+                    Value = dto.Value,
+                    Group = string.IsNullOrWhiteSpace(dto.Group) ? "general" : dto.Group,
+                    IsPublic = dto.IsPublic,
+                };
+                _context.Add(created);
+                existing[key] = created;
+                results.Add(created);
+            }
+        }
+
+        await _context.SaveChangesAsync(cancellationToken);
+        return results.Select(Map).ToList();
+    }
+
     public async Task<SiteSettingDto?> UpdateAsync(Guid id, UpdateSiteSettingDto dto, CancellationToken cancellationToken = default)
     {
         var entity = await _context.SiteSettings.FirstOrDefaultAsync(s => s.Id == id, cancellationToken);

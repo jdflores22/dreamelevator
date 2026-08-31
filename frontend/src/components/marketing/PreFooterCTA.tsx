@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Container } from '@/components/common/Container';
@@ -9,16 +9,18 @@ import { usePageSectionTheme } from '@/hooks/useSectionContent';
 import { cn } from '@/utils/cn';
 
 export function PreFooterCTA() {
+  const { pathname } = useLocation();
   const { get } = useSiteSettingsMap();
   const theme = usePageSectionTheme('home_cta');
   const isDark = theme === 'dark';
+  const onServices = pathname === '/services' || pathname.startsWith('/services/');
 
-  const title = get('home_cta_title', 'Ready to Transform Your Business?');
+  const title = get('home_cta_title', 'Have a project? Request a quote.');
   const subtitle = get(
     'home_cta_subtitle',
-    "Let's discuss how we can help you plan, build, and maintain software that fits your business.",
+    'Tell us about the building, the equipment, or the problem — we will help you plan the right path forward.',
   );
-  const primaryLabel = get('home_cta_primary_label', 'Get Started');
+  const primaryLabel = get('home_cta_primary_label', 'Get a quote');
   const secondaryLabel = get('home_cta_secondary_label', 'Explore Services');
 
   return (
@@ -68,34 +70,36 @@ export function PreFooterCTA() {
             )}
           </div>
 
-          <div className="flex shrink-0 flex-wrap items-center gap-2.5">
-            <Link to="/contact">
+          <div className="flex w-full shrink-0 flex-col gap-2.5 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
+            <Link to="/contact" className="w-full sm:w-auto">
               {isDark ? (
                 <Button
                   size="md"
-                  className="bg-brand-gold-500 text-primary-950 hover:bg-brand-gold-400"
+                  className="w-full bg-brand-gold-500 text-primary-950 hover:bg-brand-gold-400 sm:w-auto"
                 >
                   {primaryLabel}
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               ) : (
-                <Button size="md">
+                <Button size="md" className="w-full sm:w-auto">
                   {primaryLabel}
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               )}
             </Link>
-            <Link
-              to="/services"
-              className={cn(
-                'inline-flex items-center gap-1 px-2 py-2 text-sm font-medium transition-colors',
-                isDark
-                  ? 'text-slate-300 hover:text-brand-gold-400'
-                  : 'text-primary-800 hover:text-brand-gold-600',
-              )}
-            >
-              {secondaryLabel}
-            </Link>
+            {!onServices && secondaryLabel ? (
+              <Link
+                to="/services"
+                className={cn(
+                  'inline-flex items-center gap-1 px-2 py-2 text-sm font-medium transition-colors',
+                  isDark
+                    ? 'text-slate-300 hover:text-brand-gold-400'
+                    : 'text-primary-800 hover:text-brand-gold-600',
+                )}
+              >
+                {secondaryLabel}
+              </Link>
+            ) : null}
           </div>
         </motion.div>
       </Container>

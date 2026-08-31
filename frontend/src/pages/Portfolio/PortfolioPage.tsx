@@ -71,7 +71,7 @@ export default function PortfolioPage() {
     <>
       <PageSEO
         pageKey="portfolio"
-        title="Portfolio | TRANS-NET"
+        title="Portfolio"
         description="Explore our project portfolio and case studies."
       />
       <PageHero

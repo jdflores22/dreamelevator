@@ -14,37 +14,37 @@ export type HeroLayoutMode = 'static' | 'carousel';
 
 export const DEFAULT_HERO_SLIDES: HeroSlide[] = [
   {
-    eyebrow: 'Enterprise software development',
-    titleLine1: 'Driven by engineering,',
-    titleHighlight: 'empowered by people',
+    eyebrow: 'Vertical transportation since 1996',
+    titleLine1: 'An uplifting experience',
+    titleHighlight: 'for every building',
     description:
-      'We turn software into business value by delivering domain expertise, modern engineering, and dependable delivery that helps organizations grow.',
+      'We offer elevators, escalators, and other lifting equipment — from supply and installation to modernization and long-term service.',
     ctaLabel: 'Learn more',
     ctaHref: '/about',
-    secondaryCtaLabel: 'Contact us',
+    secondaryCtaLabel: 'Get a quote',
     secondaryCtaHref: '/contact',
     backgroundImage: '',
   },
   {
-    eyebrow: 'Custom applications',
-    titleLine1: 'Software built for',
-    titleHighlight: 'how you work',
+    eyebrow: 'Elevators',
+    titleLine1: 'Passenger, freight,',
+    titleHighlight: 'home and hospital lifts',
     description:
-      'From web platforms and mobile apps to enterprise systems — we design and deliver solutions tailored to your teams, customers, and operations.',
+      'Machine-room-less and small-machine-room systems specified for tight shafts, scenic enclosures, and everyday passenger traffic.',
+    ctaLabel: 'View products',
+    ctaHref: '/products',
+    secondaryCtaLabel: 'Request a quote',
+    secondaryCtaHref: '/contact',
+    backgroundImage: '',
+  },
+  {
+    eyebrow: 'Escalators & service',
+    titleLine1: 'Moving people',
+    titleHighlight: 'safely, every day',
+    description:
+      'Escalators, moving walkways, control modernization, and maintenance for all brands — with free assessment in Metro Manila.',
     ctaLabel: 'Our services',
     ctaHref: '/services',
-    secondaryCtaLabel: 'Start a project',
-    secondaryCtaHref: '/contact',
-    backgroundImage: '',
-  },
-  {
-    eyebrow: 'Long-term partnership',
-    titleLine1: 'Engineering teams',
-    titleHighlight: 'you can rely on',
-    description:
-      'Transparent delivery, maintainable code, and support that keeps your software performing in production — season after season.',
-    ctaLabel: 'View portfolio',
-    ctaHref: '/portfolio',
     secondaryCtaLabel: 'Contact us',
     secondaryCtaHref: '/contact',
     backgroundImage: '',

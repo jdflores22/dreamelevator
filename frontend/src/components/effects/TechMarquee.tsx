@@ -1,24 +1,16 @@
 import { cn } from '@/utils/cn';
 
 const DEFAULT_ITEMS = [
-  'React',
-  'TypeScript',
-  '.NET',
-  'Node.js',
-  'PostgreSQL',
-  'Docker',
-  'AWS',
-  'Azure',
-  'Kubernetes',
-  'CI/CD',
-  'REST API',
-  'Microservices',
-  'Clean Architecture',
-  'Quality Engineering',
-  'Agile',
-  'React Native',
-  'GraphQL',
-  'Redis',
+  'Passenger elevators',
+  'Freight elevators',
+  'Home & villa lifts',
+  'Hospital elevators',
+  'Scenic lifts',
+  'Escalators',
+  'Moving walkways',
+  'Control modernization',
+  'Preventive maintenance',
+  'Parts & structural works',
 ];
 
 interface TechMarqueeProps {
@@ -67,13 +59,13 @@ export function TechMarquee({
           <span
             key={`${item}-${i}`}
             className={cn(
-              'flex shrink-0 items-center gap-2 rounded-full border px-4 py-1 font-mono text-[11px] uppercase tracking-wider',
+              'font-display flex shrink-0 items-center gap-2 rounded-sm border px-4 py-1 text-[12px] uppercase tracking-[0.14em]',
               variant === 'dark'
                 ? 'border-white/10 bg-white/5 text-slate-300'
                 : 'border-slate-200 bg-white text-slate-600',
             )}
           >
-            <span className="h-1 w-1 rounded-full bg-brand-gold-400" />
+            <span className="h-3 w-[2px] bg-brand-gold-400" />
             {item}
           </span>
         ))}

@@ -127,14 +127,14 @@ export function MediaPickerModal({ isOpen, onClose, onSelect, folder }: MediaPic
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-1.5">
+        <div className="-mx-1 flex gap-1.5 overflow-x-auto overscroll-x-contain px-1 pb-1 [-webkit-overflow-scrolling:touch] sm:flex-wrap">
           {FOLDERS.map((f) => (
             <button
               key={f.id}
               type="button"
               onClick={() => setActiveFolder(f.id)}
               className={cn(
-                'rounded-full px-3 py-1 text-xs font-medium transition-colors',
+                'shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors',
                 activeFolder === f.id
                   ? 'bg-primary-900 text-white'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200',
@@ -188,7 +188,7 @@ export function MediaPickerModal({ isOpen, onClose, onSelect, folder }: MediaPic
                       <Check className="h-3.5 w-3.5" />
                     </span>
                   )}
-                  <div className="absolute left-2 top-2 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                  <div className="absolute left-2 top-2 flex gap-1 opacity-100 md:opacity-0 md:transition-opacity md:group-hover:opacity-100">
                     <button
                       type="button"
                       onClick={(e) => {

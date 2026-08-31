@@ -37,7 +37,7 @@ function ColorField({
   value: string;
   onChange: (value: string) => void;
 }) {
-  const pickerValue = isValidHexColor(value) ? normalizeHexColor(value, '#0a1a2e') : '#0a1a2e';
+  const pickerValue = isValidHexColor(value) ? normalizeHexColor(value, '#0a3144') : '#0a3144';
 
   return (
     <div className="grid gap-2 sm:grid-cols-[1fr_auto] sm:items-end">
@@ -46,7 +46,7 @@ function ColorField({
         label={label}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder="#0a1a2e"
+        placeholder="#0a3144"
       />
       <label className="flex h-[42px] w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white sm:w-14">
         <input

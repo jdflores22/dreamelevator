@@ -49,6 +49,29 @@ export default function JobApplicationsAdminPage() {
         <>
           <AdminCard>
             <AdminCardBody className="p-0">
+              <div className="divide-y divide-slate-100 md:hidden">
+                {items.map((app) => (
+                  <article key={app.id} className="px-4 py-3.5">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium text-primary-900">{app.fullName}</p>
+                        <p className="truncate text-xs text-slate-500">{app.email}</p>
+                        <p className="mt-1 text-xs text-slate-600">{app.careerTitle || '—'}</p>
+                      </div>
+                      {statusBadge(app.status)}
+                    </div>
+                    <div className="mt-3 flex items-center justify-between">
+                      <span className="text-xs text-slate-400">
+                        {new Date(app.createdAt).toLocaleDateString()}
+                      </span>
+                      <Button type="button" size="sm" variant="outline" onClick={() => setSelected(app)}>
+                        View
+                      </Button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+              <div className="hidden md:block">
               <Table>
                 <THead>
                   <TR>
@@ -78,12 +101,13 @@ export default function JobApplicationsAdminPage() {
                       </TD>
                     </TR>
                   ))}
-                </TBody>
-              </Table>
+              </TBody>
+            </Table>
+              </div>
             </AdminCardBody>
           </AdminCard>
           {meta && meta.totalPages > 1 && (
-            <div className="mt-4 flex justify-between text-sm text-slate-500">
+            <div className="mt-4 flex flex-col gap-3 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
               <span>Page {meta.page} of {meta.totalPages}</span>
               <div className="flex gap-2">
                 <Button size="sm" variant="outline" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>Prev</Button>

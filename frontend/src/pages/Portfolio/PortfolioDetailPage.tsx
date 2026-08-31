@@ -38,7 +38,7 @@ export default function PortfolioDetailPage() {
 
   return (
     <>
-      <SEOHead title={`${item.title} | TRANS-NET Portfolio`} description={item.description} />
+      <SEOHead title={item.title} description={item.description} />
 
       {coverImage ? (
         <div className="relative h-64 overflow-hidden bg-primary-900 sm:h-80 lg:h-96">

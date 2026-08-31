@@ -19,14 +19,14 @@ export function SettingsTabBar<T extends string>({
   onChange,
 }: SettingsTabBarProps<T>) {
   return (
-    <div className="flex flex-wrap gap-1 rounded-lg border border-slate-200 bg-white p-1">
+    <div className="flex gap-1 overflow-x-auto overscroll-x-contain rounded-lg border border-slate-200 bg-white p-1 [-webkit-overflow-scrolling:touch] sm:flex-wrap">
       {tabs.map((tab) => (
         <button
           key={tab.id}
           type="button"
           onClick={() => onChange(tab.id)}
           className={cn(
-            'rounded-md px-3 py-2 text-left transition-colors sm:min-w-[6.5rem]',
+            'shrink-0 rounded-md px-3 py-2.5 text-left transition-colors sm:min-w-[6.5rem]',
             active === tab.id
               ? 'bg-primary-900 text-white shadow-sm'
               : 'text-slate-600 hover:bg-slate-50 hover:text-primary-900',

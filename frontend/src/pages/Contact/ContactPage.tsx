@@ -5,7 +5,6 @@ import { ContactMainSection } from '@/pages/Contact/sections/ContactMainSection'
 import { ContactExpectSection } from '@/pages/Contact/sections/ContactExpectSection';
 import { ContactFAQSection } from '@/pages/Contact/sections/ContactFAQSection';
 import { ContactMapSection } from '@/pages/Contact/sections/ContactMapSection';
-import { ContactCareersSection } from '@/pages/Contact/sections/ContactCareersSection';
 
 export default function ContactPage() {
   const sections = useContactSectionsVisibility();
@@ -14,8 +13,8 @@ export default function ContactPage() {
     <>
       <PageSEO
         pageKey="contact"
-        title="Contact | TRANS-NET"
-        description="Get in touch with TRANS-NET for software development, product demos, and enterprise solutions."
+        title="Contact"
+        description="Get in touch for a quote, free assessment, installation, modernization, or maintenance."
       />
 
       <ContactHero />
@@ -25,8 +24,6 @@ export default function ContactPage() {
       {sections.contact_map && <ContactMapSection />}
 
       {sections.contact_expect && <ContactExpectSection />}
-
-      {sections.contact_careers && <ContactCareersSection />}
 
       {sections.contact_faq && <ContactFAQSection />}
     </>

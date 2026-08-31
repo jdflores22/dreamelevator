@@ -15,7 +15,7 @@ export function Stats() {
   const section = useSectionContent('home_stats', {
     eyebrow: 'Results',
     title: 'Outcomes we deliver',
-    subtitle: 'Measurable impact from software built with clarity, quality, and long-term partnership.',
+    subtitle: 'Maintenance roots, expanded supply and installation, and a long-term service commitment.',
   });
   const theme = usePageSectionTheme('home_stats');
 
@@ -39,7 +39,7 @@ export function Stats() {
         ) : (
           <div
             className={cn(
-              'grid gap-px overflow-hidden rounded-2xl sm:grid-cols-2 lg:grid-cols-4',
+              'grid gap-px overflow-hidden rounded-sm sm:grid-cols-2 lg:grid-cols-4',
               theme === 'dark'
                 ? 'border border-white/15 bg-white/10'
                 : 'border border-slate-200 bg-slate-200',
@@ -74,7 +74,7 @@ export function Stats() {
                   {stat.label}
                 </p>
                 <Link
-                  to="/portfolio"
+                  to="/gallery"
                   className={cn(
                     'mt-6 inline-flex items-center gap-1 text-sm font-semibold',
                     theme === 'dark'

@@ -13,7 +13,7 @@ public class ClientService : IClientService
 
     public ClientService(IApplicationDbContext context) => _context = context;
 
-    public async Task<(List<ClientDto> Items, ResponseMeta Meta)> GetAllAsync(bool adminView, int page = 1, int pageSize = 20, CancellationToken cancellationToken = default)
+    public async Task<(List<ClientDto> Items, ResponseMeta Meta)> GetAllAsync(bool adminView, int page = 1, int pageSize = 50, CancellationToken cancellationToken = default)
     {
         var query = QueryExtensions.ApplyPublicFilter(_context.Clients, adminView).OrderBy(c => c.Name);
         var (items, meta) = await QueryExtensions.ToPagedListAsync(query, page, pageSize, cancellationToken);
@@ -33,6 +33,7 @@ public class ClientService : IClientService
         {
             Name = dto.Name,
             LogoUrl = dto.LogoUrl,
+            Location = dto.Location,
             Website = dto.Website,
             IsPublished = dto.IsPublished
         };
@@ -48,6 +49,7 @@ public class ClientService : IClientService
 
         entity.Name = dto.Name;
         entity.LogoUrl = dto.LogoUrl;
+        entity.Location = dto.Location;
         entity.Website = dto.Website;
         entity.IsPublished = dto.IsPublished;
         entity.UpdatedAt = DateTime.UtcNow;
@@ -71,6 +73,7 @@ public class ClientService : IClientService
         Id = entity.Id,
         Name = entity.Name,
         LogoUrl = entity.LogoUrl,
+        Location = entity.Location,
         Website = entity.Website,
         IsPublished = entity.IsPublished,
         CreatedAt = entity.CreatedAt,

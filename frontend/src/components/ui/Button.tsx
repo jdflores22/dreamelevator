@@ -11,9 +11,9 @@ const variants = {
 } as const;
 
 const sizes = {
-  sm: 'px-4 py-2 text-xs rounded-full',
-  md: 'px-5 py-2.5 text-sm rounded-full',
-  lg: 'px-8 py-3.5 text-sm font-semibold rounded-full',
+  sm: 'px-3.5 py-2 text-xs rounded-sm',
+  md: 'px-5 py-2.5 text-sm rounded-sm',
+  lg: 'px-7 py-3.5 text-sm font-semibold rounded-sm',
 } as const;
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -27,7 +27,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     <button
       ref={ref}
       className={cn(
-        'inline-flex items-center justify-center gap-2 font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold-400/60 disabled:pointer-events-none disabled:opacity-50',
+        'inline-flex items-center justify-center gap-2 font-semibold tracking-wide transition-[background-color,box-shadow,transform] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold-400/60 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50',
         variants[variant],
         sizes[size],
         className,

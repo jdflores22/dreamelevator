@@ -14,10 +14,10 @@ interface ProductsHeroProps {
 export function ProductsHero({ productCount, hasFeatured }: ProductsHeroProps) {
   const isDark = useSectionDarkBackground('products_hero', true);
   const hero = usePageHeroContent('products_page', {
-    eyebrow: 'Software products',
-    title: 'Enterprise Software Products',
+    eyebrow: 'Lift products',
+    title: 'Elevators, escalators, and moving systems',
     subtitle:
-      'Ready-to-deploy and customizable solutions built for real-world operations — from document management to industry-specific platforms.',
+      'Passenger, freight, scenic, hospital, home, and accessibility lifts — plus escalators, moving walkways, modernization, and service.',
   });
 
   return (
@@ -90,7 +90,7 @@ export function ProductsHero({ productCount, hasFeatured }: ProductsHeroProps) {
           {productCount > 0 && (
             <div
               className={cn(
-                'mt-6 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm',
+                'mt-6 inline-flex items-center gap-2 rounded-sm border px-4 py-2 text-sm',
                 isDark
                   ? 'border-white/15 bg-white/5 text-slate-200'
                   : 'border-slate-200 bg-slate-50 text-slate-700',
@@ -108,12 +108,12 @@ export function ProductsHero({ productCount, hasFeatured }: ProductsHeroProps) {
             <Link to="/contact">
               {isDark ? (
                 <Button className="bg-brand-gold-500 text-primary-950 hover:bg-brand-gold-400">
-                  Request a demo
+                  Request a quote
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               ) : (
                 <Button size="lg">
-                  Request a demo
+                  Request a quote
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               )}

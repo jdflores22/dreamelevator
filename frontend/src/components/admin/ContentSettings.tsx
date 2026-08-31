@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Briefcase, FileText, Home, Info, Share2 } from 'lucide-react';
+import { Briefcase, FileText, Home, Image as ImageIcon, Info, Share2 } from 'lucide-react';
 import { useSiteSettings, useUpdateSiteSetting, useCreateSiteSetting } from '@/api/hooks';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -66,10 +66,13 @@ const CONTENT_GROUPS: {
     description: '“What we do” statement block below the hero.',
     icon: Home,
     fields: [
+      { key: 'home_intro_eyebrow', label: 'Eyebrow' },
       { key: 'home_intro_line1', label: 'Headline — line 1' },
       { key: 'home_intro_line2', label: 'Headline — line 2 (accent)' },
       { key: 'home_intro_line3', label: 'Headline — line 3 (optional)' },
       { key: 'home_intro_body', label: 'Body text', type: 'textarea', rows: 3 },
+      { key: 'home_intro_story_label', label: 'About link label' },
+      { key: 'home_intro_services_label', label: 'Services link label' },
     ],
   },
   {
@@ -81,6 +84,49 @@ const CONTENT_GROUPS: {
       { key: 'portfolio_page_subtitle', label: 'Page subtitle', type: 'textarea', rows: 2 },
     ],
     imageKey: 'portfolio_hero_image',
+  },
+  {
+    id: 'gallery',
+    title: 'Gallery page',
+    description: 'Photo grid on /gallery. One image URL per line, or JSON [{ "src", "alt" }].',
+    icon: ImageIcon,
+    fields: [
+      { key: 'gallery_page_title', label: 'Page title' },
+      { key: 'gallery_page_subtitle', label: 'Page subtitle', type: 'textarea', rows: 2 },
+      {
+        key: 'gallery_images',
+        label: 'Photos (JSON or one URL per line, optional |alt)',
+        type: 'textarea',
+        rows: 10,
+      },
+    ],
+    imageKey: 'gallery_hero_image',
+  },
+  {
+    id: 'services',
+    title: 'Services page',
+    description: 'Service & Maintenance page on /services. Lead copy comes from Admin → Services.',
+    icon: Briefcase,
+    fields: [
+      { key: 'services_page_highlight', label: 'Highlight callout' },
+      { key: 'services_related_eyebrow', label: 'Other services — eyebrow' },
+      { key: 'services_related_title', label: 'Other services — title' },
+      { key: 'services_cta_title', label: 'Quote CTA — title' },
+      { key: 'services_cta_subtitle', label: 'Quote CTA — subtitle', type: 'textarea', rows: 2 },
+      { key: 'services_cta_label', label: 'Quote button label' },
+    ],
+    imageFields: [
+      {
+        key: 'services_page_image',
+        label: 'Photo 1',
+        hint: 'Portrait from the Service & Maintenance page.',
+      },
+      {
+        key: 'services_page_image_2',
+        label: 'Photo 2',
+        hint: 'Second portrait beside the first.',
+      },
+    ],
   },
   {
     id: 'about',
@@ -108,11 +154,27 @@ const CONTENT_GROUPS: {
         label: 'Vision section image',
         hint: 'Optional image beside the vision statement.',
       },
+      {
+        key: 'about_story_image_2',
+        label: 'Who we are — photo 2',
+        hint: 'Second portrait in the story photo row.',
+      },
+      {
+        key: 'about_story_image_3',
+        label: 'Who we are — photo 3',
+        hint: 'Third portrait in the story photo row.',
+      },
     ],
     fields: [
       { key: 'about_page_eyebrow', label: 'Page hero — eyebrow' },
       { key: 'about_page_title', label: 'Page headline' },
       { key: 'about_page_subtitle', label: 'Page intro', type: 'textarea', rows: 3 },
+      { key: 'about_values_eyebrow', label: 'Core values — eyebrow' },
+      { key: 'about_values_title', label: 'Core values — title' },
+      { key: 'about_values', label: 'Core values (one per line)', type: 'textarea', rows: 4 },
+      { key: 'about_assessment_title', label: 'Free assessment — title' },
+      { key: 'about_assessment_body', label: 'Free assessment — body', type: 'textarea', rows: 3 },
+      { key: 'about_controls_note', label: 'Controls / technical note', type: 'textarea', rows: 4 },
       { key: 'about_mission', label: 'Mission statement', type: 'textarea', rows: 3 },
       {
         key: 'about_mission_image_position',

@@ -1,18 +1,18 @@
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY backend/TransNet.sln ./
+COPY backend/DreamElevator.sln ./
 COPY backend/src/TransNet.Domain/TransNet.Domain.csproj src/TransNet.Domain/
 COPY backend/src/TransNet.Application/TransNet.Application.csproj src/TransNet.Application/
 COPY backend/src/TransNet.Persistence/TransNet.Persistence.csproj src/TransNet.Persistence/
 COPY backend/src/TransNet.Infrastructure/TransNet.Infrastructure.csproj src/TransNet.Infrastructure/
-COPY backend/src/TransNet.API/TransNet.API.csproj src/TransNet.API/
-RUN dotnet restore src/TransNet.API/TransNet.API.csproj
+COPY backend/src/DreamElevator.API/DreamElevator.API.csproj src/DreamElevator.API/
+RUN dotnet restore src/DreamElevator.API/DreamElevator.API.csproj
 COPY backend/ .
-RUN dotnet publish src/TransNet.API/TransNet.API.csproj -c Release -o /app/publish --no-restore
+RUN dotnet publish src/DreamElevator.API/DreamElevator.API.csproj -c Release -o /app/publish --no-restore
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/publish .
 RUN mkdir -p wwwroot/uploads
 EXPOSE 5000
-ENTRYPOINT ["dotnet", "TransNet.API.dll"]
+ENTRYPOINT ["dotnet", "DreamElevator.API.dll"]

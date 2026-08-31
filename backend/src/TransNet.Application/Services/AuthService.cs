@@ -90,6 +90,7 @@ public class AuthService : IAuthService
         Email = user.Email,
         FirstName = user.FirstName,
         LastName = user.LastName,
+        RoleId = user.RoleId,
         RoleName = user.Role.Name,
         IsActive = user.IsActive
     };

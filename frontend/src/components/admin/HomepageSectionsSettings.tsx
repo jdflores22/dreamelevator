@@ -12,6 +12,15 @@ import type { SiteSetting } from '@/types';
 /** Matches homepage section order on the live site. */
 const HOME_SECTIONS = [
   {
+    id: 'home_process',
+    label: 'How we work',
+    defaults: {
+      eyebrow: 'How we work',
+      title: 'Supply and jobsite process',
+      subtitle: 'From free assessment through production, careful unloading, installation, and maintenance.',
+    },
+  },
+  {
     id: 'home_clients',
     label: 'Trusted companies',
     defaults: {
@@ -61,18 +70,9 @@ const HOME_SECTIONS = [
     id: 'home_why',
     label: 'Why choose us',
     defaults: {
-      eyebrow: 'Why TRANS-NET',
+      eyebrow: 'Why us',
       title: 'Built around what matters to you',
       subtitle: 'Engagements tied to delivery milestones, transparent scope, and outcomes you can measure.',
-    },
-  },
-  {
-    id: 'home_process',
-    label: 'Development process',
-    defaults: {
-      eyebrow: 'Process',
-      title: 'Our Development Process',
-      subtitle: 'A proven methodology for delivering successful projects on time and on budget.',
     },
   },
   {
@@ -123,8 +123,10 @@ const HOME_SECTIONS = [
 ] as const;
 
 const PAGE_HEROES = [
-  { id: 'services_page', label: 'Services — page hero', defaults: { title: 'Our Services', subtitle: 'Comprehensive software solutions — from custom applications and web platforms to mobile apps and ongoing support.' } },
-  { id: 'services_section', label: 'Services — main section', defaults: { eyebrow: 'What we do', title: 'End-to-End Software Solutions', subtitle: 'We partner with businesses to design, build, deploy, and maintain software that drives real outcomes.' } },
+  { id: 'services_page', label: 'Services — page hero', defaults: { title: 'Service & Maintenance', subtitle: 'Affordable, quality maintenance for all types and brands of elevators, escalators, and related equipment.' } },
+  { id: 'services_section', label: 'Services — main section', defaults: { eyebrow: 'What we do', title: 'Elevators, escalators, and complete support', subtitle: 'Supply, installation, modernization, maintenance, parts, and structural shafts — tailored to each building.' } },
+  { id: 'gallery_page', label: 'Gallery page', defaults: { title: 'Gallery', subtitle: 'Jobsite photos from installation, modernization, and service work.' } },
+  { id: 'clients_page', label: 'Clients page', defaults: { title: 'Our valued clients', subtitle: 'Buildings and facilities we are proud to serve.' } },
   { id: 'careers_page', label: 'Careers page', defaults: { title: 'Careers', subtitle: 'Build the future of enterprise software with us.' } },
   { id: 'blog_page', label: 'Blog page', defaults: { title: 'Blog', subtitle: 'Insights, trends, and best practices.' } },
   { id: 'industries_page', label: 'Industries page', defaults: { title: 'Industries We Serve', subtitle: 'Domain expertise across diverse sectors.' } },

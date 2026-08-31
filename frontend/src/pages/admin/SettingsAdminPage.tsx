@@ -145,7 +145,7 @@ export default function SettingsAdminPage() {
       />
 
       {/* Mobile: horizontal scrolling section picker */}
-      <div className="-mx-4 mb-6 flex gap-2 overflow-x-auto px-4 pb-2 lg:hidden">
+      <div className="-mx-3 mb-6 flex gap-2 overflow-x-auto overscroll-x-contain px-3 pb-2 [-webkit-overflow-scrolling:touch] sm:-mx-6 sm:px-6 lg:hidden">
         {SECTIONS.map((section) => (
           <button
             key={section.id}

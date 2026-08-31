@@ -67,7 +67,7 @@ export function useCtaContent(defaults: {
   const { get } = useSiteSettingsMap();
 
   return {
-    title: get('home_cta_title', defaults.title ?? 'Ready to build your next software solution?'),
+    title: get('home_cta_title', defaults.title ?? 'Have a project? Request a quote.'),
     subtitle: get('home_cta_subtitle', defaults.subtitle ?? ''),
     primaryLabel: get('home_cta_primary_label', defaults.primaryLabel ?? 'Get Started'),
     secondaryLabel: get('home_cta_secondary_label', defaults.secondaryLabel ?? 'Explore Services'),

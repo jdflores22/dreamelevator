@@ -28,7 +28,7 @@ function ToastItem({ toast }: { toast: Toast }) {
     <div
       role="status"
       className={cn(
-        'pointer-events-auto flex w-80 items-start gap-3 rounded-xl border border-l-4 border-slate-200 bg-white px-4 py-3 shadow-lg',
+        'pointer-events-auto flex w-[min(20rem,calc(100vw-2rem))] items-start gap-3 rounded-xl border border-l-4 border-slate-200 bg-white px-4 py-3 shadow-lg',
         'animate-[toast-in_0.2s_ease-out]',
         accent,
       )}
@@ -57,7 +57,7 @@ export function Toaster() {
   if (toasts.length === 0) return null;
 
   return (
-    <div className="pointer-events-none fixed bottom-4 right-4 z-[100] flex flex-col gap-2">
+    <div className="pointer-events-none fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-[max(1rem,env(safe-area-inset-right))] z-[100] flex flex-col gap-2">
       {toasts.map((toast) => (
         <ToastItem key={toast.id} toast={toast} />
       ))}

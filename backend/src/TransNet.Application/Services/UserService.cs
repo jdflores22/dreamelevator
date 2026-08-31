@@ -86,6 +86,7 @@ public class UserService : IUserService
         Email = entity.Email,
         FirstName = entity.FirstName,
         LastName = entity.LastName,
+        RoleId = entity.RoleId,
         RoleName = entity.Role.Name,
         IsActive = entity.IsActive
     };

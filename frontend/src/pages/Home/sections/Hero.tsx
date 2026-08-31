@@ -14,14 +14,14 @@ import { HeroSlideContent } from '@/components/marketing/HeroSlideContent';
 import type { HeroSlide } from '@/constants/heroCarousel';
 import { useSiteSettingsMap } from '@/hooks/useSiteSettingsMap';
 import { resolveMediaUrl } from '@/utils/media';
-import { hexToRgba } from '@/utils/color';
+import { ShaftAtmosphere } from '@/components/effects/ShaftAtmosphere';
 import { cn } from '@/utils/cn';
 
 export function Hero() {
   const { isPagePublished } = usePageVisibilityMap();
   const showAbout = isPagePublished('about');
   const { get } = useSiteSettingsMap();
-  const { colors, isDark, mainStyle, cssVars, imageOverlayOpacity } = useHeroAppearance();
+  const { colors, isDark, mainStyle, cssVars, imageOverlayStyle } = useHeroAppearance();
   const layoutMode = useHeroLayoutMode();
   const carouselSlides = useHeroSlides();
   const { intervalMs, showPanel, autoplay } = useHeroCarouselOptions();
@@ -29,16 +29,16 @@ export function Hero() {
 
   const staticSlide = useMemo<HeroSlide>(
     () => ({
-      eyebrow: get('hero_agency_label', '') || get('hero_tagline', 'Enterprise software development'),
-      titleLine1: get('hero_title_line1', 'Driven by engineering,'),
-      titleHighlight: get('hero_title_highlight', 'empowered by people'),
+      eyebrow: get('hero_agency_label', '') || get('hero_tagline', 'Vertical transportation since 1996'),
+      titleLine1: get('hero_title_line1', 'An uplifting experience'),
+      titleHighlight: get('hero_title_highlight', 'for every building'),
       description: get(
         'hero_description',
-        'We turn software into business value by delivering domain expertise, modern engineering, and dependable delivery that helps organizations grow — in any market environment.',
+        'We offer elevators, escalators, and other lifting equipment — from supply and installation to modernization and long-term service.',
       ),
       ctaLabel: 'Learn more',
       ctaHref: showAbout ? '/about' : '/services',
-      secondaryCtaLabel: 'Contact us',
+      secondaryCtaLabel: 'Get a quote',
       secondaryCtaHref: '/contact',
       backgroundImage: get('hero_background_image', ''),
     }),
@@ -55,10 +55,6 @@ export function Hero() {
     setCarouselIndex(index);
   }, []);
 
-  const imageOverlayStyle = isDark
-    ? `linear-gradient(105deg, ${hexToRgba(colors.bg, 0.94)} 0%, ${hexToRgba(colors.bg, 0.88)} 42%, ${hexToRgba(colors.bg, 0.72)} 68%, ${hexToRgba(colors.bg, 0.55)} 100%)`
-    : `linear-gradient(105deg, rgba(248,250,252,${imageOverlayOpacity}) 0%, rgba(255,255,255,${Math.max(0.75, imageOverlayOpacity - 0.05)}) 42%, rgba(255,255,255,${Math.max(0.6, imageOverlayOpacity - 0.2)}) 68%, rgba(255,255,255,${Math.max(0.45, imageOverlayOpacity - 0.3)}) 100%)`;
-
   const showPromoPanel = !isCarousel || showPanel;
   const gridCols = showPromoPanel ? 'lg:grid-cols-[1.05fr_0.95fr]' : 'lg:grid-cols-1';
 
@@ -68,6 +64,7 @@ export function Hero() {
         className={cn('relative overflow-hidden border-b', isDark ? 'border-white/10' : 'border-slate-200/60')}
         style={backgroundImage ? { backgroundColor: colors.bg } : mainStyle}
       >
+        {!backgroundImage ? <ShaftAtmosphere isDark={isDark} showRail={false} /> : null}
         <AnimatePresence mode="wait">
           {backgroundImage && (
             <motion.div
@@ -82,16 +79,17 @@ export function Hero() {
                 src={backgroundImage}
                 alt=""
                 aria-hidden
-                className="absolute inset-0 h-full w-full object-cover object-center"
+                className="absolute inset-0 h-full w-full scale-110 object-cover object-[72%_center] blur-[8px] saturate-[0.6] sm:blur-[14px] sm:saturate-[0.55]"
               />
               <div className="absolute inset-0" style={{ background: imageOverlayStyle }} />
+              <div className="absolute inset-0 bg-primary-950/40 sm:hidden" aria-hidden />
             </motion.div>
           )}
         </AnimatePresence>
 
         <div
           className={cn(
-            'relative z-10 mx-auto grid max-w-7xl items-center gap-10 px-4 pb-16 pt-14 sm:px-6 sm:pb-20 sm:pt-20 lg:gap-12 lg:px-8 lg:pb-24 lg:pt-24',
+            'relative z-10 mx-auto grid max-w-7xl items-start gap-5 px-3 pb-8 pt-7 sm:items-center sm:gap-10 sm:px-6 sm:pb-20 sm:pt-20 lg:gap-12 lg:px-8 lg:pb-24 lg:pt-24',
             gridCols,
           )}
         >

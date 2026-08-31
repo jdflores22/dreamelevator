@@ -22,7 +22,7 @@ export function PortfolioSection() {
   const section = useSectionContent('home_portfolio', {
     eyebrow: 'Case Studies',
     title: 'Proven results across industries',
-    subtitle: 'Explore how we help organizations solve complex challenges with custom software, web platforms, and mobile applications.',
+    subtitle: 'Installations and modernization work across residential and commercial buildings.',
   });
 
   const current = projects[active];
@@ -108,7 +108,7 @@ export function PortfolioSection() {
                         type="button"
                         onClick={() => go(-1)}
                         aria-label="Previous project"
-                        className="flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 text-primary-800 transition-colors hover:border-primary-300 hover:bg-slate-50"
+                        className="flex h-11 w-11 items-center justify-center rounded-sm border border-slate-200 text-primary-800 transition-colors hover:border-primary-300 hover:bg-slate-50"
                       >
                         <ArrowLeft className="h-4 w-4" />
                       </button>
@@ -116,7 +116,7 @@ export function PortfolioSection() {
                         type="button"
                         onClick={() => go(1)}
                         aria-label="Next project"
-                        className="flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 text-primary-800 transition-colors hover:border-primary-300 hover:bg-slate-50"
+                        className="flex h-11 w-11 items-center justify-center rounded-sm border border-slate-200 text-primary-800 transition-colors hover:border-primary-300 hover:bg-slate-50"
                       >
                         <ArrowRight className="h-4 w-4" />
                       </button>
@@ -153,10 +153,10 @@ export function PortfolioSection() {
 
         <div className="mt-10">
           <Link
-            to="/portfolio"
+            to="/gallery"
             className="inline-flex items-center gap-2 text-sm font-semibold text-primary-800 hover:text-brand-gold-600"
           >
-            View full portfolio
+            View gallery
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>

@@ -55,6 +55,39 @@ export default function SubscribersAdminPage() {
         <>
           <AdminCard>
             <AdminCardBody className="p-0">
+              <div className="divide-y divide-slate-100 md:hidden">
+                {items.map((sub) => (
+                  <article key={sub.id} className="px-4 py-3.5">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="min-w-0 break-all text-sm font-medium text-primary-900">{sub.email}</p>
+                      <Badge variant={sub.isActive ? 'success' : 'warning'}>
+                        {sub.isActive ? 'Active' : 'Unsubscribed'}
+                      </Badge>
+                    </div>
+                    <p className="mt-1 text-xs text-slate-400">
+                      {new Date(sub.subscribedAt).toLocaleDateString()}
+                    </p>
+                    <div className="mt-3 flex flex-wrap justify-end gap-2">
+                      {sub.isActive && (
+                        <Button type="button" size="sm" variant="outline" onClick={() => unsubscribe.mutate(sub.id)}>
+                          Unsubscribe
+                        </Button>
+                      )}
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          if (window.confirm(`Remove ${sub.email}?`)) remove.mutate(sub.id);
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+              <div className="hidden md:block">
               <Table>
                 <THead>
                   <TR>
@@ -102,12 +135,13 @@ export default function SubscribersAdminPage() {
                       </TD>
                     </TR>
                   ))}
-                </TBody>
-              </Table>
+              </TBody>
+            </Table>
+              </div>
             </AdminCardBody>
           </AdminCard>
           {meta && meta.totalPages > 1 && (
-            <div className="mt-4 flex justify-between text-sm text-slate-500">
+            <div className="mt-4 flex flex-col gap-3 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
               <span>Page {meta.page} of {meta.totalPages}</span>
               <div className="flex gap-2">
                 <Button size="sm" variant="outline" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>Prev</Button>

@@ -93,6 +93,22 @@ export default function ActivityLogAdminPage() {
       ) : (
         <>
           <div className="overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-sm">
+            <div className="divide-y divide-slate-100 md:hidden">
+              {items.map((log) => (
+                <article key={log.id} className="px-4 py-3.5">
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="text-sm font-medium text-primary-900">{log.userName}</p>
+                    <Badge variant={ACTION_VARIANT[log.action] ?? 'accent'}>{log.action}</Badge>
+                  </div>
+                  <p className="mt-1 text-xs text-slate-500">
+                    <span className="capitalize">{log.entity}</span>
+                    {log.details ? ` · ${log.details}` : ''}
+                  </p>
+                  <p className="mt-1 text-[11px] text-slate-400">{formatTimestamp(log.timestamp)}</p>
+                </article>
+              ))}
+            </div>
+            <div className="hidden md:block">
             <Table>
               <THead>
                 <TR>
@@ -126,10 +142,11 @@ export default function ActivityLogAdminPage() {
                 ))}
               </TBody>
             </Table>
+            </div>
           </div>
 
           {meta && meta.totalPages > 1 && (
-            <div className="mt-4 flex items-center justify-between text-sm text-slate-500">
+            <div className="mt-4 flex flex-col gap-3 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
               <span>
                 Page {meta.page} of {meta.totalPages} · {meta.total} entries
               </span>

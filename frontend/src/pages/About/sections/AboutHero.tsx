@@ -17,9 +17,9 @@ export function AboutHero({ heroImage, showStatsBar = false, stats = [] }: About
   const isDark = useSectionDarkBackground('about_hero');
   const hero = usePageHeroContent('about_page', {
     eyebrow: 'Who we are',
-    title: 'Delivering software expertise and results',
+    title: 'An elevator company built on experience',
     subtitle:
-      'For over a decade, we have been a software development partner driven by engineering and empowered by people — building custom applications that create lasting business impact.',
+      'Since 1996 we have supplied, installed, modernized, and maintained elevators, escalators, and lifting equipment across the Philippines.',
   });
   const sortedStats = [...stats].sort((a, b) => a.sortOrder - b.sortOrder).slice(0, 4);
 
@@ -44,7 +44,7 @@ export function AboutHero({ heroImage, showStatsBar = false, stats = [] }: About
             className="absolute inset-0"
             style={{
               background: isDark
-                ? 'linear-gradient(105deg, rgba(10,26,46,0.94) 0%, rgba(10,26,46,0.88) 45%, rgba(10,26,46,0.75) 100%)'
+                ? 'linear-gradient(105deg, rgba(10,49,68,0.94) 0%, rgba(10,49,68,0.88) 45%, rgba(10,49,68,0.75) 100%)'
                 : 'linear-gradient(105deg, rgba(248,250,252,0.97) 0%, rgba(255,255,255,0.92) 42%, rgba(255,255,255,0.78) 68%, rgba(255,255,255,0.55) 100%)',
             }}
           />

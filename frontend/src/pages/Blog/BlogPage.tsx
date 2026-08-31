@@ -22,7 +22,7 @@ export default function BlogPage() {
 
   return (
     <>
-      <SEOHead title="Blog | TRANS-NET" description="Latest articles and insights from TRANS-NET." />
+      <SEOHead title="Blog" description="Latest articles and insights." />
       <PageHero title={hero.title} subtitle={hero.subtitle} />
       <Container className="py-16">
         <div className="grid gap-10 lg:grid-cols-3">

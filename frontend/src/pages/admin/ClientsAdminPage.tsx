@@ -7,6 +7,7 @@ import {
 import type { Client } from '@/types';
 import { AdminCrudPage } from '@/components/admin/AdminCrudPage';
 import { EntityForm } from '@/components/admin/EntityForm';
+import { resolveMediaUrl } from '@/utils/media';
 
 export default function ClientsAdminPage() {
   const { data: items, isLoading } = useAdminClients();
@@ -21,7 +22,23 @@ export default function ClientsAdminPage() {
       items={items}
       isLoading={isLoading}
       columns={[
+        {
+          key: 'logoUrl',
+          label: 'Logo',
+          sortable: false,
+          render: (item) =>
+            item.logoUrl ? (
+              <img
+                src={resolveMediaUrl(item.logoUrl)}
+                alt=""
+                className="h-9 w-14 object-contain"
+              />
+            ) : (
+              <span className="text-xs text-slate-400">No logo</span>
+            ),
+        },
         { key: 'name', label: 'Name' },
+        { key: 'location', label: 'Location' },
         { key: 'website', label: 'Website' },
       ]}
       onDelete={(id) => deleteMutation.mutateAsync(id)}
@@ -30,7 +47,15 @@ export default function ClientsAdminPage() {
           defaultValues={item || { isPublished: true }}
           fields={[
             { name: 'name', label: 'Name' },
-            { name: 'logoUrl', label: 'Logo URL' },
+            { name: 'location', label: 'Location' },
+            {
+              name: 'logoUrl',
+              label: 'Logo',
+              type: 'image',
+              folder: 'clients',
+              preview: 'logo',
+              hint: 'Upload a PNG, SVG, or WebP. This is the mark shown in the homepage carousel.',
+            },
             { name: 'website', label: 'Website' },
             { name: 'isPublished', label: 'Published', type: 'checkbox' },
           ]}

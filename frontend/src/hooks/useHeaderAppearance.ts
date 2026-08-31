@@ -61,14 +61,14 @@ export function resolveHeaderAppearance(
 
   const navLinkClass = (isActive: boolean) =>
     cn(
-      'rounded-full px-4 py-2 text-sm font-medium transition-colors',
+      'relative flex h-full items-center px-3.5 text-[13px] font-semibold uppercase tracking-[0.12em] font-display transition-colors',
       isDark
         ? isActive
-          ? 'bg-white/10 text-white'
-          : 'text-slate-300 hover:bg-white/5 hover:text-white'
+          ? 'text-white after:absolute after:inset-x-3 after:bottom-0 after:h-[3px] after:bg-brand-gold-500'
+          : 'text-slate-300 hover:text-white'
         : isActive
-          ? 'bg-primary-900/10 text-primary-900'
-          : 'text-slate-600 hover:bg-slate-100 hover:text-primary-900',
+          ? 'text-primary-900 after:absolute after:inset-x-3 after:bottom-0 after:h-[3px] after:bg-brand-gold-500'
+          : 'text-slate-600 hover:text-primary-900',
     );
 
   return {
@@ -84,8 +84,8 @@ export function resolveHeaderAppearance(
     menuButtonClassName: isDark ? 'text-white' : 'text-primary-900',
     mobileDark: isDark,
     previewContactClass: isDark
-      ? 'rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium text-white'
-      : 'rounded-full bg-primary-900 px-3 py-1.5 text-xs font-medium text-white',
+      ? 'rounded-sm bg-white/10 px-3 py-1.5 text-xs font-medium text-white'
+      : 'rounded-sm bg-primary-900 px-3 py-1.5 text-xs font-medium text-white',
     previewNavActiveClass: isDark ? 'text-white' : 'text-primary-900',
     previewNavInactiveClass: isDark ? 'text-slate-400' : 'text-slate-500',
   };

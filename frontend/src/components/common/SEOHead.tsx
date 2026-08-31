@@ -1,4 +1,6 @@
 import { Helmet } from 'react-helmet-async';
+import { useCompanyBrand } from '@/hooks/useCompanyBrand';
+import { applyBrandName, formatPageTitle, isLegacyBrandCopy } from '@/utils/brand';
 
 export interface SEOHeadProps {
   title?: string;
@@ -7,20 +9,24 @@ export interface SEOHeadProps {
   ogImage?: string;
 }
 
-export function SEOHead({
-  title = 'TRANS-NET | Software Solutions',
-  description = 'Custom software development and enterprise applications by TRANS-NET.',
-  keywords = 'software development, enterprise software, custom applications, TRANS-NET',
-  ogImage,
-}: SEOHeadProps) {
+export function SEOHead({ title, description, keywords, ogImage }: SEOHeadProps) {
+  const { name, tagline } = useCompanyBrand();
+  const resolvedTitle = formatPageTitle(title, name, tagline);
+  const brandedDescription = description ? applyBrandName(description, name) : '';
+  const resolvedDescription =
+    brandedDescription && !isLegacyBrandCopy(brandedDescription)
+      ? brandedDescription
+      : [name, tagline].filter(Boolean).join(' — ');
+  const resolvedKeywords = keywords ? applyBrandName(keywords, name) : '';
+
   return (
     <Helmet>
-      <title>{title}</title>
-      <meta name="description" content={description} />
-      <meta name="keywords" content={keywords} />
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={description} />
-      {ogImage && <meta property="og:image" content={ogImage} />}
+      {resolvedTitle ? <title>{resolvedTitle}</title> : null}
+      {resolvedDescription ? <meta name="description" content={resolvedDescription} /> : null}
+      {resolvedKeywords ? <meta name="keywords" content={resolvedKeywords} /> : null}
+      {resolvedTitle ? <meta property="og:title" content={resolvedTitle} /> : null}
+      {resolvedDescription ? <meta property="og:description" content={resolvedDescription} /> : null}
+      {ogImage ? <meta property="og:image" content={ogImage} /> : null}
     </Helmet>
   );
 }

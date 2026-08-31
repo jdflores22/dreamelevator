@@ -69,8 +69,8 @@ export function DeleteConfirmModal({
               Delete failed. Please try again.
             </p>
           )}
-          <div className="mt-6 flex justify-end gap-2">
-            <Button variant="outline" size="sm" onClick={handleClose} disabled={status === 'deleting'}>
+          <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+            <Button variant="outline" size="sm" onClick={handleClose} disabled={status === 'deleting'} className="w-full sm:w-auto">
               Cancel
             </Button>
             <Button
@@ -78,6 +78,7 @@ export function DeleteConfirmModal({
               size="sm"
               onClick={() => void handleConfirm()}
               disabled={status === 'deleting'}
+              className="w-full sm:w-auto"
             >
               {status === 'deleting' ? (
                 <>

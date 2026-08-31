@@ -1,6 +1,7 @@
 # Dependencies
 node_modules/
 frontend/dist/
+frontend/dist.tar.gz
 
 # Build outputs
 backend/**/bin/
@@ -19,8 +20,8 @@ frontend/.env
 *.suo
 
 # Uploads
-backend/src/TransNet.API/wwwroot/uploads/*
-!backend/src/TransNet.API/wwwroot/uploads/.gitkeep
+backend/src/DreamElevator.API/wwwroot/uploads/*
+!backend/src/DreamElevator.API/wwwroot/uploads/.gitkeep
 
 # OS
 .DS_Store

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AlertCircle, CheckCircle2, Globe, Mail, MapPin, Phone, Send } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Globe, Mail, MapPin, Phone, Send, Smartphone } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   useEmailStatus,
@@ -18,9 +18,18 @@ import { toast } from '@/store/toastStore';
 import { isAxiosError } from 'axios';
 
 const CONTACT_FIELDS = [
-  { key: 'company_email', label: 'Email', icon: Mail, placeholder: 'info@trans-net.com' },
-  { key: 'company_phone', label: 'Phone', icon: Phone, placeholder: '+1-800-TRANS-NET' },
-  { key: 'company_website', label: 'Website', icon: Globe, placeholder: 'www.trans-net.com' },
+  { key: 'company_email', label: 'Email', icon: Mail, placeholder: 'hello@example.com' },
+  { key: 'company_email_alt', label: 'Alternate email', icon: Mail, placeholder: 'second@example.com' },
+  { key: 'company_phone', label: 'Trunkline', icon: Phone, placeholder: '+63 2 0000 0000' },
+  {
+    key: 'company_mobiles',
+    label: 'Mobile numbers',
+    icon: Smartphone,
+    placeholder: 'One number per line',
+    type: 'textarea' as const,
+    rows: 3,
+  },
+  { key: 'company_website', label: 'Website', icon: Globe, placeholder: 'www.example.com' },
   { key: 'company_address', label: 'Address', icon: MapPin, placeholder: 'Global Headquarters' },
 ] as const;
 
@@ -183,17 +192,36 @@ export function ContactSettings() {
     >
       <form id="contact-settings-form" onSubmit={(e) => void handleSubmit(e)}>
         <div className="grid gap-5 sm:grid-cols-2">
-          {CONTACT_FIELDS.map(({ key, label, icon: Icon, placeholder }) => (
-            <div key={key} className={key === 'company_address' ? 'sm:col-span-2' : undefined}>
+          {CONTACT_FIELDS.map((field) => (
+            <div
+              key={field.key}
+              className={
+                field.key === 'company_address' || field.key === 'company_mobiles'
+                  ? 'sm:col-span-2'
+                  : undefined
+              }
+            >
               <label className="mb-1.5 flex items-center gap-2 text-sm font-medium text-slate-700">
-                <Icon className="h-4 w-4 text-brand-gold-500" />
-                {label}
+                <field.icon className="h-4 w-4 text-brand-gold-500" />
+                {field.label}
               </label>
-              <Input name={key} defaultValue={values[key]} placeholder={placeholder} />
-              {key === 'company_email' && (
+              {'type' in field && field.type === 'textarea' ? (
+                <Textarea
+                  name={field.key}
+                  defaultValue={values[field.key]}
+                  placeholder={field.placeholder}
+                  rows={field.rows}
+                />
+              ) : (
+                <Input name={field.key} defaultValue={values[field.key]} placeholder={field.placeholder} />
+              )}
+              {field.key === 'company_email' && (
                 <p className="mt-1.5 text-xs text-slate-500">
                   Contact form notifications are sent here. If SMTP login is blank, this address is also used to send mail.
                 </p>
+              )}
+              {field.key === 'company_mobiles' && (
+                <p className="mt-1.5 text-xs text-slate-500">One mobile number per line. Shown on the contact page and footer.</p>
               )}
             </div>
           ))}

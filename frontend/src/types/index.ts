@@ -119,6 +119,7 @@ export interface ProcessStep extends BaseEntity {
 export interface Client extends BaseEntity {
   name: string;
   logoUrl: string;
+  location: string;
   website: string;
 }
 
@@ -227,6 +228,7 @@ export interface User {
   firstName: string;
   lastName: string;
   roleId: string;
+  roleName?: string;
   role?: Role;
   isActive: boolean;
   createdAt: string;
@@ -401,4 +403,351 @@ export interface EmailTestResult {
   outcome: string;
   to: string;
   message: string;
+}
+
+export interface Supplier extends BaseEntity {
+  name: string;
+  contactPerson: string;
+  email: string;
+  phone: string;
+  country: string;
+  address: string;
+  notes: string;
+  sortOrder: number;
+  lineCount: number;
+}
+
+export type UpsertSupplier = {
+  name: string;
+  contactPerson: string;
+  email: string;
+  phone: string;
+  country: string;
+  address: string;
+  notes: string;
+  sortOrder: number;
+  isPublished: boolean;
+};
+
+export interface SupplierListParams {
+  search?: string;
+  activeOnly?: boolean;
+  page?: number;
+  pageSize?: number;
+}
+
+export type InventoryLineKind = 'Part' | 'Charge' | 'Note';
+
+export interface InventoryPart extends BaseEntity {
+  purchasedAt: string | null;
+  supplier: string;
+  item: string;
+  specification: string;
+  quantity: number | null;
+  issuedQuantity: number;
+  returnedQuantity: number;
+  adjustedQuantity: number;
+  onHand: number;
+  unitPrice: number | null;
+  totalPrice: number | null;
+  amountInPeso: number | null;
+  projectBuilding: string;
+  lineKind: InventoryLineKind | string;
+  currency: string;
+  notes: string;
+  sortOrder: number;
+}
+
+export type UpsertInventoryPart = {
+  purchasedAt?: string | null;
+  supplier: string;
+  item: string;
+  specification: string;
+  quantity: number | null;
+  unitPrice: number | null;
+  totalPrice: number | null;
+  amountInPeso: number | null;
+  projectBuilding: string;
+  lineKind: string;
+  currency: string;
+  notes: string;
+  sortOrder: number;
+  isPublished: boolean;
+};
+
+export interface InventoryNamedTotal {
+  name: string;
+  total: number;
+  totalUsd: number;
+  totalPhp: number;
+  count: number;
+  quantity: number;
+}
+
+export interface InventoryIssuance {
+  id: string;
+  inventoryPartId: string | null;
+  item: string;
+  specification: string;
+  quantity: number;
+  issuedAt: string | null;
+  receivedByEmployeeId: string | null;
+  receivedByUserId: string | null;
+  receivedByName: string;
+  receivedByPosition: string;
+  receivedByCode: string;
+  receivedByDepartment: string;
+  receivedByPhotoUrl: string;
+  clientId: string | null;
+  clientName: string;
+  projectBuilding: string;
+  purpose: string;
+  notes: string;
+  issuedByUserId: string | null;
+  issuedByName: string;
+  onHandAfter?: number | null;
+  returnedQuantity: number;
+  returnableQuantity: number;
+  isPublished: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type UpsertInventoryIssuance = {
+  inventoryPartId?: string | null;
+  item: string;
+  specification: string;
+  quantity: number;
+  issuedAt?: string | null;
+  receivedByEmployeeId?: string | null;
+  receivedByUserId?: string | null;
+  receivedByName: string;
+  clientId?: string | null;
+  clientName: string;
+  projectBuilding: string;
+  purpose: string;
+  notes: string;
+  isPublished: boolean;
+};
+
+export interface InventoryAvailablePart {
+  id: string;
+  item: string;
+  specification: string;
+  supplier: string;
+  projectBuilding: string;
+  purchasedAt: string | null;
+  purchasedQuantity: number;
+  issuedQuantity: number;
+  onHand: number;
+}
+
+export interface InventoryRecipientOption {
+  id: string;
+  name: string;
+  email: string;
+}
+
+export type StockMovementType = 'Return' | 'Damage' | 'Loss' | 'Adjustment';
+
+export interface StockMovement {
+  id: string;
+  inventoryPartId: string;
+  item: string;
+  specification: string;
+  supplier: string;
+  movementType: StockMovementType;
+  quantity: number;
+  damagedQuantity: number;
+  delta: number;
+  occurredAt: string | null;
+  sourceIssuanceId: string | null;
+  employeeId: string | null;
+  employeeName: string;
+  reason: string;
+  notes: string;
+  recordedByUserId: string | null;
+  recordedByName: string;
+  onHandAfter: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type UpsertStockMovement = {
+  inventoryPartId: string;
+  movementType: StockMovementType;
+  quantity: number;
+  damagedQuantity: number;
+  increase: boolean;
+  occurredAt?: string | null;
+  sourceIssuanceId?: string | null;
+  employeeId?: string | null;
+  employeeName: string;
+  reason: string;
+  notes: string;
+};
+
+export interface StockMovementListParams {
+  search?: string;
+  movementType?: string;
+  inventoryPartId?: string;
+  employeeId?: string;
+  from?: string;
+  to?: string;
+  page?: number;
+  pageSize?: number;
+}
+
+export interface StockLedgerEntry {
+  id: string;
+  kind: string;
+  occurredAt: string | null;
+  delta: number;
+  balance: number;
+  reference: string;
+  notes: string;
+}
+
+export interface StockLedger {
+  inventoryPartId: string;
+  item: string;
+  specification: string;
+  supplier: string;
+  purchasedQuantity: number;
+  issuedQuantity: number;
+  returnedQuantity: number;
+  adjustedQuantity: number;
+  damagedQuantity: number;
+  onHand: number;
+  entries: StockLedgerEntry[];
+}
+
+export interface InventoryEmployeeOption {
+  id: string;
+  employeeCode: string;
+  name: string;
+  position: string;
+  department: string;
+  photoUrl: string;
+}
+
+export interface InventoryIssuanceOptions {
+  recipients: InventoryRecipientOption[];
+  employees: InventoryEmployeeOption[];
+  availableParts: InventoryAvailablePart[];
+}
+
+export interface Employee {
+  id: string;
+  employeeCode: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  position: string;
+  department: string;
+  email: string;
+  phone: string;
+  photoUrl: string;
+  hiredAt: string | null;
+  notes: string;
+  sortOrder: number;
+  userId: string | null;
+  isPublished: boolean;
+  issuanceCount: number;
+  totalQuantityIssued: number;
+  lastIssuedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type UpsertEmployee = {
+  employeeCode: string;
+  firstName: string;
+  lastName: string;
+  position: string;
+  department: string;
+  email: string;
+  phone: string;
+  photoUrl: string;
+  hiredAt?: string | null;
+  notes: string;
+  sortOrder: number;
+  userId?: string | null;
+  isPublished: boolean;
+};
+
+export interface EmployeeItemTotal {
+  item: string;
+  quantity: number;
+  count: number;
+}
+
+export interface EmployeeProfile {
+  employee: Employee;
+  issuances: InventoryIssuance[];
+  topItems: EmployeeItemTotal[];
+}
+
+export interface EmployeeListParams {
+  search?: string;
+  department?: string;
+  activeOnly?: boolean;
+  page?: number;
+  pageSize?: number;
+}
+
+export interface InventoryIssuanceListParams {
+  search?: string;
+  clientId?: string;
+  inventoryPartId?: string;
+  employeeId?: string;
+  from?: string;
+  to?: string;
+  page?: number;
+  pageSize?: number;
+}
+
+export interface InventoryDashboard {
+  totalLines: number;
+  partCount: number;
+  chargeCount: number;
+  supplierCount: number;
+  totalQuantity: number;
+  totalSpendUsd: number;
+  totalSpendPhp: number;
+  averageUnitPriceUsd: number;
+  averageUnitPricePhp: number;
+  usdToPhpRate: number;
+  phpEnteredCount: number;
+  phpEstimatedCount: number;
+  missingPriceCount: number;
+  unassignedProjectCount: number;
+  totalIssuedQuantity: number;
+  totalReturnedQuantity: number;
+  totalAdjustedQuantity: number;
+  issuanceCount: number;
+  totalOnHandQuantity: number;
+  zeroStockCount: number;
+  spendBySupplier: InventoryNamedTotal[];
+  spendByMonth: InventoryNamedTotal[];
+  topItems: InventoryNamedTotal[];
+  recent: InventoryPart[];
+  recentIssuances: InventoryIssuance[];
+}
+
+export interface InventoryFilters {
+  suppliers: string[];
+  projects: string[];
+  lineKinds: string[];
+}
+
+export interface InventoryListParams {
+  search?: string;
+  supplier?: string;
+  project?: string;
+  lineKind?: string;
+  from?: string;
+  to?: string;
+  page?: number;
+  pageSize?: number;
 }

@@ -10,10 +10,10 @@ import { cn } from '@/utils/cn';
 export function AboutProductsPromo() {
   const isDark = useSectionDarkBackground('about_products_promo', true);
   const section = useSectionContent('about_products_promo', {
-    eyebrow: 'Software products',
-    title: 'Enterprise Software Products',
+    eyebrow: 'Lift products',
+    title: 'Elevators, escalators, and moving systems',
     subtitle:
-      'Ready-to-deploy and customizable solutions built for real-world operations — from document management to industry-specific platforms.',
+      'Supply, installation, modernization, and service — from compact home lifts to commercial passenger systems.',
   });
 
   return (
@@ -25,7 +25,7 @@ export function AboutProductsPromo() {
           viewport={{ once: true }}
           transition={{ duration: 0.45 }}
           className={cn(
-            'relative overflow-hidden rounded-2xl border px-8 py-10 sm:px-12 sm:py-12',
+            'relative overflow-hidden rounded-sm border-l-[3px] border-brand-gold-500 border px-8 py-10 sm:px-12 sm:py-12',
             isDark
               ? 'border-white/15 bg-gradient-to-br from-primary-950/90 via-primary-900/80 to-primary-950/90'
               : 'border-slate-200 bg-white shadow-sm',
@@ -75,7 +75,7 @@ export function AboutProductsPromo() {
 
               <div
                 className={cn(
-                  'mt-5 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm',
+                  'mt-5 inline-flex items-center gap-2 rounded-sm border px-4 py-2 text-sm',
                   isDark
                     ? 'border-white/15 bg-white/5 text-slate-200'
                     : 'border-slate-200 bg-slate-50 text-slate-700',
@@ -112,7 +112,7 @@ export function AboutProductsPromo() {
                       'border-white/25 bg-transparent text-white hover:border-white/40 hover:bg-white/10 hover:text-white',
                   )}
                 >
-                  Request a demo
+                  Request a quote
                 </Button>
               </Link>
             </div>

@@ -7,9 +7,7 @@ import { parseJsonArray } from '@/utils/jsonArray';
 import { resolveMediaUrl } from '@/utils/media';
 import { cn } from '@/utils/cn';
 
-const GOLD_STROKE = '#d4a017';
-const HEX_CLIP =
-  'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)';
+const GOLD_STROKE = '#f7971f';
 
 interface ProductCatalogCardProps {
   product: SoftwareProduct;
@@ -33,10 +31,10 @@ export function ProductCatalogCard({ product, index, isDark = false }: ProductCa
       <Link to={`/products/${product.slug}`} className="group block h-full">
         <article
           className={cn(
-            'relative flex h-full flex-col overflow-hidden rounded-2xl border transition-all duration-300',
+            'relative flex h-full flex-col overflow-hidden rounded-sm border transition-all duration-300',
             isDark
               ? 'border-white/10 bg-white/[0.03] hover:border-brand-gold-400/40 hover:bg-white/[0.06]'
-              : 'border-slate-200 bg-white/90 backdrop-blur-[2px] hover:-translate-y-1 hover:border-brand-gold-400/55 hover:shadow-[0_24px_50px_-28px_rgba(10,26,46,0.45)]',
+              : 'border-slate-200 bg-white/90 backdrop-blur-[2px] hover:-translate-y-1 hover:border-brand-gold-400/55 hover:shadow-[0_24px_50px_-28px_rgba(10,49,68,0.45)]',
           )}
         >
           <span className="absolute inset-x-0 top-0 z-10 h-1 origin-left scale-x-0 bg-gradient-to-r from-transparent via-brand-gold-500 to-transparent transition-transform duration-300 group-hover:scale-x-100" />
@@ -116,13 +114,9 @@ export function ProductCatalogCard({ product, index, isDark = false }: ProductCa
               {screenshotUrl && !logoUrl && (
                 <span
                   className={cn(
-                    'mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center text-xs font-bold',
-                    isDark ? 'text-brand-gold-400' : 'text-brand-gold-600',
+                    'mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-sm border-l-[3px] border-brand-gold-500 text-xs font-bold',
+                    isDark ? 'bg-white/8 text-brand-gold-400' : 'bg-brand-gold-500/10 text-brand-gold-600',
                   )}
-                  style={{
-                    clipPath: HEX_CLIP,
-                    backgroundColor: isDark ? 'rgba(212,160,23,0.15)' : 'rgba(212,160,23,0.12)',
-                  }}
                 >
                   {product.name.charAt(0)}
                 </span>

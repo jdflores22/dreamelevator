@@ -8,7 +8,7 @@ public class ContactMessage
     public string Name { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string CompanyName { get; set; } = string.Empty;
-    /// <summary>Who is reaching out: trucker, shipping_lines, container_yard, private_company.</summary>
+    /// <summary>Who is reaching out: building_owner, contractor, facility, other.</summary>
     public string SenderType { get; set; } = string.Empty;
     public string Subject { get; set; } = string.Empty;
     public string Body { get; set; } = string.Empty;

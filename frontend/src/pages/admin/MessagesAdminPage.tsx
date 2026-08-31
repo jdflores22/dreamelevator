@@ -180,6 +180,51 @@ export default function MessagesAdminPage() {
               }
             />
           ) : (
+            <>
+            <div className="divide-y divide-slate-100 md:hidden">
+              {filtered.map((msg) => {
+                const meta = statusMeta[msg.status];
+                const isNew = msg.status === MessageStatus.New;
+                return (
+                  <article
+                    key={msg.id}
+                    className="cursor-pointer px-4 py-3.5"
+                    onClick={() => openMessage(msg)}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className={cn('truncate text-sm text-primary-900', isNew ? 'font-semibold' : 'font-medium')}>
+                          {isNew && (
+                            <span className="mr-2 inline-block h-2 w-2 rounded-full bg-brand-red-500 align-middle" />
+                          )}
+                          {msg.name}
+                        </p>
+                        <p className="truncate text-xs text-slate-400">{msg.email}</p>
+                        <p className="mt-1 truncate text-sm text-slate-600">{msg.subject || 'No subject'}</p>
+                      </div>
+                      <Badge variant={meta.variant} className="shrink-0">
+                        {meta.label}
+                      </Badge>
+                    </div>
+                    <div className="mt-3 flex items-center justify-between gap-2">
+                      <span className="text-xs text-slate-400">
+                        {new Date(msg.createdAt).toLocaleDateString()}
+                      </span>
+                      <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
+                        <a
+                          href={replyHref(msg)}
+                          className="inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-slate-200 px-3 text-xs font-medium text-primary-700"
+                        >
+                          <Reply className="h-3.5 w-3.5" />
+                          Reply
+                        </a>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+            <div className="hidden md:block">
             <Table className="rounded-none border-0 shadow-none">
               <THead>
                 <TR>
@@ -265,6 +310,8 @@ export default function MessagesAdminPage() {
                 })}
               </TBody>
             </Table>
+            </div>
+            </>
           )}
         </AdminCardBody>
       </AdminCard>

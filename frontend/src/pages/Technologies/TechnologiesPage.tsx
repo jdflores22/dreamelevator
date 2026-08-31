@@ -21,7 +21,7 @@ import { useSectionDarkBackground } from '@/hooks/useSectionContent';
 import { sectionSurfaceClass } from '@/utils/sectionSurface';
 import { cn } from '@/utils/cn';
 
-/** Brand-only accents — navy, gold, red (rotated per card). */
+/** Brand accents — orange and cyan. */
 const brandAccents = [
   {
     border: 'border-brand-gold-500',
@@ -34,9 +34,9 @@ const brandAccents = [
     bg: 'bg-primary-50',
   },
   {
-    border: 'border-brand-red-500',
-    accent: 'text-brand-red-600',
-    bg: 'bg-brand-red-500/10',
+    border: 'border-primary-500',
+    accent: 'text-primary-600',
+    bg: 'bg-primary-50',
   },
 ] as const;
 
@@ -77,7 +77,7 @@ export default function TechnologiesPage() {
   return (
     <>
       <PageSEO
-        title="Technologies | TRANS-NET"
+        title="Technologies"
         description="Modern tools and frameworks powering our software development solutions."
       />
 

@@ -7,21 +7,21 @@ export type HeroHighlightCard = {
 
 export const DEFAULT_HERO_HIGHLIGHTS: HeroHighlightCard[] = [
   {
-    title: 'Custom software development',
-    body: 'Build reliable enterprise applications and digital products tailored to how your teams and customers actually work.',
+    title: 'Elevators',
+    body: 'Passenger, freight, scenic, hospital, home, and accessibility lifts — MRL or SMR.',
     href: '/services',
     linkLabel: 'Learn more',
   },
   {
-    title: 'Web & mobile applications',
-    body: 'Design and deliver responsive web platforms and mobile apps with clear UX, solid architecture, and maintainable code.',
+    title: 'Escalators',
+    body: 'Standard escalators, walkalators, moving walkways, and stair lifts.',
     href: '/services',
     linkLabel: 'Learn more',
   },
   {
-    title: 'Dedicated development teams',
-    body: 'Scale delivery with engineers who integrate into your workflow, communicate clearly, and stay focused on outcomes.',
-    href: '/contact',
+    title: 'Modernization',
+    body: 'Reliable control upgrades that cut energy use and maintenance cost.',
+    href: '/services',
     linkLabel: 'Learn more',
   },
 ];

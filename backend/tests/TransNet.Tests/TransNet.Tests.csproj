@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\TransNet.API\TransNet.API.csproj" />
+    <ProjectReference Include="..\..\src\DreamElevator.API\DreamElevator.API.csproj" />
     <ProjectReference Include="..\..\src\TransNet.Application\TransNet.Application.csproj" />
   </ItemGroup>
 

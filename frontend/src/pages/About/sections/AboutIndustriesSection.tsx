@@ -39,7 +39,7 @@ export function AboutIndustriesSection() {
               viewport={{ once: true }}
               transition={{ delay: index * 0.03 }}
               className={cn(
-                'flex min-w-[200px] max-w-xs flex-1 items-center gap-3 rounded-xl border px-5 py-4 transition-all sm:min-w-[220px] sm:max-w-[280px]',
+                'flex w-full min-w-0 items-center gap-3 rounded-xl border px-4 py-3.5 transition-all sm:min-w-[220px] sm:max-w-[280px] sm:flex-1 sm:px-5 sm:py-4',
                 isDark
                   ? 'border-white/10 bg-white/5 hover:border-brand-gold-500/40 hover:bg-white/[0.07]'
                   : 'border-slate-200 bg-white hover:-translate-y-0.5 hover:border-brand-gold-400/50 hover:shadow-md',

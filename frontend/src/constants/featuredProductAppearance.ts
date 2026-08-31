@@ -12,7 +12,7 @@ export type FeaturedProductColorTokens = {
 
 export const FEATURED_PRODUCT_PRESET_OPTIONS = [
   { value: 'light' as const, label: 'Light' },
-  { value: 'navy' as const, label: 'Navy' },
+  { value: 'navy' as const, label: 'Dark' },
   { value: 'custom' as const, label: 'Custom' },
 ];
 
@@ -22,28 +22,28 @@ export const FEATURED_PRODUCT_THEME_PRESETS: Record<
 > = {
   light: {
     bg: '#ffffff',
-    accent: '#d4a017',
-    title: '#0a1a2e',
+    accent: '#f7971f',
+    title: '#0a3144',
     body: '#475569',
-    eyebrow: '#926f0c',
+    eyebrow: '#de7a12',
     cardBg: '#f8fafc',
     cardBorder: '#e2e8f0',
   },
   navy: {
-    bg: '#0a1a2e',
-    accent: '#f5c842',
+    bg: '#0a3144',
+    accent: '#f8b44a',
     title: '#ffffff',
     body: '#cbd5e1',
-    eyebrow: '#f5c842',
+    eyebrow: '#f8b44a',
     cardBg: 'rgba(255, 255, 255, 0.04)',
     cardBorder: 'rgba(255, 255, 255, 0.1)',
   },
   custom: {
-    bg: '#0a1a2e',
-    accent: '#f5c842',
+    bg: '#0a3144',
+    accent: '#f8b44a',
     title: '#ffffff',
     body: '#cbd5e1',
-    eyebrow: '#f5c842',
+    eyebrow: '#f8b44a',
     cardBg: 'rgba(255, 255, 255, 0.04)',
     cardBorder: 'rgba(255, 255, 255, 0.1)',
   },

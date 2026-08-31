@@ -38,7 +38,7 @@ export function Modal({ isOpen, onClose, title, children, size = 'md' }: ModalPr
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
+      className="fixed inset-0 z-[100] flex items-stretch justify-center p-0 sm:items-center sm:p-6"
       role="presentation"
     >
       <div
@@ -48,7 +48,9 @@ export function Modal({ isOpen, onClose, title, children, size = 'md' }: ModalPr
       />
       <div
         className={cn(
-          'relative z-10 flex w-full max-h-[min(90dvh,calc(100vh-2rem))] flex-col overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-slate-200/50',
+          'relative z-10 flex h-full w-full max-h-none flex-col overflow-hidden bg-white shadow-2xl ring-1 ring-slate-200/50',
+          'pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]',
+          'sm:h-auto sm:max-h-[min(90dvh,calc(100vh-2rem))] sm:rounded-2xl',
           sizes[size],
         )}
         role="dialog"
@@ -56,16 +58,16 @@ export function Modal({ isOpen, onClose, title, children, size = 'md' }: ModalPr
         aria-labelledby={title ? 'modal-title' : undefined}
       >
         {title && (
-          <div className="flex shrink-0 items-center justify-between border-b border-slate-100 bg-gradient-to-r from-slate-50 to-primary-50/40 px-6 py-4">
-            <h2 id="modal-title" className="text-lg font-medium text-primary-900">
+          <div className="flex shrink-0 items-center justify-between border-b border-slate-100 bg-gradient-to-r from-slate-50 to-primary-50/40 px-4 py-3 sm:px-6 sm:py-4">
+            <h2 id="modal-title" className="pr-3 text-base font-medium text-primary-900 sm:text-lg">
               {title}
             </h2>
-            <Button variant="ghost" size="sm" onClick={onClose} aria-label="Close">
+            <Button variant="ghost" size="sm" onClick={onClose} aria-label="Close" className="min-h-11 min-w-11">
               <X className="h-4 w-4" />
             </Button>
           </div>
         )}
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-4">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-6">
           {children}
         </div>
       </div>

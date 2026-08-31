@@ -5,7 +5,7 @@ import { adminNavGroups, type AdminNavGroup } from '@/constants/navigation';
 import { useAuth, useDashboardStats } from '@/api/hooks';
 import { useAuthStore } from '@/store/authStore';
 import { CompanyLogoImage } from '@/components/common/CompanyLogoImage';
-import { resolveMediaUrl } from '@/utils/media';
+import { useCompanyBrand } from '@/hooks/useCompanyBrand';
 import { cn } from '@/utils/cn';
 
 export interface AdminSidebarProps {
@@ -45,6 +45,7 @@ export function AdminSidebar({ onNavigate }: AdminSidebarProps) {
   const { data: stats } = useDashboardStats();
   const { collapsed, toggle } = useCollapsedGroups();
   const [query, setQuery] = useState('');
+  const { name: companyName, logoSrc, logoMedia } = useCompanyBrand();
 
   const badges: Record<string, number> = {
     unreadMessages: stats?.unreadMessages ?? 0,
@@ -67,18 +68,20 @@ export function AdminSidebar({ onNavigate }: AdminSidebarProps) {
   }, [q]);
 
   return (
-    <aside className="admin-sidebar-bg flex h-full w-[17.5rem] flex-col text-white">
+    <aside className="admin-sidebar-bg flex h-full w-[min(17.5rem,85vw)] flex-col text-white">
       {/* Brand */}
       <div className="border-b border-white/10 px-5 py-4">
         <Link to="/admin" className="flex items-center gap-3" onClick={onNavigate}>
-          <CompanyLogoImage
-            src={resolveMediaUrl('/logo.png')}
-            alt="TRANS-NET"
-            size="sm"
-            mediaHint="png"
-          />
+          {logoSrc ? (
+            <CompanyLogoImage
+              src={logoSrc}
+              alt={companyName}
+              size="sm"
+              mediaHint={logoMedia}
+            />
+          ) : null}
           <div className="min-w-0 leading-tight">
-            <span className="block truncate text-sm font-semibold">TRANS-NET</span>
+            <span className="block truncate text-sm font-semibold">{companyName || 'CMS'}</span>
             <span className="mt-0.5 flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-brand-gold-400/90">
               <Code2 className="h-3 w-3" />
               CMS Console
@@ -262,7 +265,7 @@ export function MobileAdminSidebar({ isOpen, onClose }: MobileAdminSidebarProps)
   return (
     <div className="fixed inset-0 z-50 lg:hidden">
       <div className="absolute inset-0 bg-primary-950/70 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative h-full w-[17.5rem] shadow-2xl">
+      <div className="relative h-full w-[min(17.5rem,85vw)] pt-[env(safe-area-inset-top)] shadow-2xl">
         <button
           type="button"
           className="absolute right-3 top-3 z-10 rounded-lg p-2 text-white/80 hover:bg-white/10"

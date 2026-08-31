@@ -20,12 +20,16 @@ import {
   MessageSquareQuote,
   Newspaper,
   Package,
+  PackageMinus,
+  Repeat2,
   PenSquare,
   Settings,
   Shield,
   ShoppingBag,
   Sparkles,
+  Truck,
   Users,
+  Warehouse,
   Wrench,
 } from 'lucide-react';
 
@@ -39,8 +43,7 @@ export const mainNavLinks: NavLink[] = [
   { label: 'About Us', href: '/about' },
   { label: 'Services', href: '/services' },
   { label: 'Products', href: '/products' },
-  { label: 'Technologies', href: '/technologies' },
-  { label: 'Portfolio', href: '/portfolio' },
+  { label: 'Gallery', href: '/gallery' },
   { label: 'Contact', href: '/contact' },
 ];
 
@@ -48,6 +51,8 @@ export const footerNavLinks: NavLink[] = [
   { label: 'About', href: '/about' },
   { label: 'Services', href: '/services' },
   { label: 'Products', href: '/products' },
+  { label: 'Gallery', href: '/gallery' },
+  { label: 'Clients', href: '/clients' },
   { label: 'Portfolio', href: '/portfolio' },
   { label: 'Blog', href: '/blog' },
   { label: 'Careers', href: '/careers' },
@@ -200,6 +205,49 @@ export const adminNavGroups: AdminNavGroup[] = [
     ],
   },
   {
+    id: 'operations',
+    label: 'Operations',
+    icon: Warehouse,
+    links: [
+      {
+        label: 'Inventory dashboard',
+        href: '/admin/workspace',
+        icon: Gauge,
+        description: 'Parts spend & suppliers',
+      },
+      {
+        label: 'Parts register',
+        href: '/admin/workspace/inventory',
+        icon: Package,
+        description: 'CRUD matching the Excel file',
+      },
+      {
+        label: 'Stock out',
+        href: '/admin/workspace/inventory/out',
+        icon: PackageMinus,
+        description: 'Issue parts to people and sites',
+      },
+      {
+        label: 'Movements',
+        href: '/admin/workspace/inventory/movements',
+        icon: Repeat2,
+        description: 'Returns, damage, loss, count fixes',
+      },
+      {
+        label: 'Suppliers',
+        href: '/admin/workspace/suppliers',
+        icon: Truck,
+        description: 'Master list of parts suppliers',
+      },
+      {
+        label: 'Employees',
+        href: '/admin/workspace/employees',
+        icon: Users,
+        description: 'Staff profiles that receive stock',
+      },
+    ],
+  },
+  {
     id: 'system',
     label: 'System',
     icon: Settings,
@@ -228,6 +276,12 @@ export const adminNavIndex: (AdminNavLink & { group: string })[] = adminNavGroup
 
 export const adminPageTitles: Record<string, string> = {
   '/admin': 'Dashboard',
+  '/admin/workspace': 'Inventory dashboard',
+  '/admin/workspace/inventory': 'Parts register',
+  '/admin/workspace/inventory/out': 'Stock out',
+  '/admin/workspace/suppliers': 'Suppliers',
+  '/admin/workspace/employees': 'Employees',
+  '/admin/workspace/inventory/movements': 'Stock movements',
   '/admin/projects': 'Projects',
   '/admin/services': 'Services',
   '/admin/products': 'Software products',

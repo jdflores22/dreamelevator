@@ -21,8 +21,8 @@ export default function ProductsPage() {
     <>
       <PageSEO
         pageKey="products"
-        title="Software Products | TRANS-NET"
-        description="Enterprise software products — ECMS, CRM, ERP and customizable solutions from TRANS-NET."
+        title="Products"
+        description="Passenger, freight, scenic, hospital, home, and accessibility lifts — plus escalators and moving walkways."
       />
 
       <ProductsHero productCount={sorted.length} hasFeatured={Boolean(featured)} />

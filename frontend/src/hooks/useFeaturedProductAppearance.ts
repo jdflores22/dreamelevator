@@ -34,8 +34,7 @@ function buildCustomColors(
 
 export function useFeaturedProductAppearance(sectionId = 'home_featured_product') {
   const { get } = useSiteSettingsMap();
-  const defaultDark =
-    sectionId === 'home_featured_product' || sectionId === 'products_featured';
+  const defaultDark = false;
   const darkFromLayout = useSectionDarkBackground(sectionId, defaultDark);
   const presetKey =
     sectionId === 'products_featured'

@@ -14,25 +14,39 @@ export function CompanyBrandText({
   taglineColor,
 }: CompanyBrandTextProps) {
   const nameParts = companyName.includes('-') ? companyName.split('-') : null;
+  const words = companyName.trim().split(/\s+/).filter(Boolean);
+  const compactName = words[0] ?? companyName;
+  const useCompact = words.length > 2;
+
+  const fullName = nameParts ? (
+    <>
+      {nameParts[0]}-
+      <span style={{ color: accentColor }}>{nameParts.slice(1).join('-')}</span>
+    </>
+  ) : (
+    companyName
+  );
 
   return (
-    <div className="leading-tight">
-      <span className="block text-base font-medium tracking-wide" style={{ color: nameColor }}>
-        {nameParts ? (
+    <div className="min-w-0 leading-tight">
+      <span className="block truncate text-sm font-medium tracking-wide sm:text-base" style={{ color: nameColor }}>
+        {useCompact ? (
           <>
-            {nameParts[0]}-
-            <span style={{ color: accentColor }}>{nameParts.slice(1).join('-')}</span>
+            <span className="sm:hidden">{compactName}</span>
+            <span className="hidden sm:inline">{fullName}</span>
           </>
         ) : (
-          companyName
+          fullName
         )}
       </span>
-      <span
-        className="block text-[10px] font-medium uppercase tracking-wider"
-        style={{ color: taglineColor }}
-      >
-        {tagline}
-      </span>
+      {tagline ? (
+        <span
+          className="hidden truncate text-[10px] font-medium uppercase tracking-wider sm:block"
+          style={{ color: taglineColor }}
+        >
+          {tagline}
+        </span>
+      ) : null}
     </div>
   );
 }

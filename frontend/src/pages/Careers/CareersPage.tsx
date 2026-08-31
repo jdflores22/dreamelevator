@@ -17,14 +17,14 @@ export default function CareersPage() {
   const [applyCareer, setApplyCareer] = useState<Career | null>(null);
   const hero = usePageHeroContent('careers_page', {
     title: 'Careers',
-    subtitle: 'Build the future of enterprise software with us.',
+    subtitle: 'Join a team that keeps buildings moving safely.',
   });
 
   if (isLoading) return <PageLoader />;
 
   return (
     <>
-      <PageSEO pageKey="careers" title="Careers | TRANS-NET" description="Join the TRANS-NET team." />
+      <PageSEO pageKey="careers" title="Careers" description="Join the team." />
       <PageHero title={hero.title} subtitle={hero.subtitle} />
       <Container className="py-16">
         <div className="space-y-4">

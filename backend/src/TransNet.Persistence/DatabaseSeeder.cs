@@ -2,7 +2,9 @@ using BCrypt.Net;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TransNet.Application.Common;
+using TransNet.Domain.Authorization;
 using TransNet.Domain.Entities;
+using TransNet.Persistence.SeedData;
 
 namespace TransNet.Persistence;
 
@@ -21,7 +23,21 @@ public class DatabaseSeeder
     {
         await SeedPermissionsAsync();
         await SeedRolesAsync();
+        await SeedMissingOperationalRolesAsync();
         await SeedAdminUserAsync();
+        await SeedMissingInventoryPermissionsAsync();
+        await SeedInventoryPartsIfEmptyAsync();
+
+        var packApplied = await _context.SiteSettings.AnyAsync(s => s.Key == DeecContentAligner.PackKey);
+        if (packApplied)
+        {
+            await SeedMissingIntroLabelsAsync();
+            await SeedMissingServicesPageSettingsAsync();
+            await SeedMissingAboutPageSettingsAsync();
+            _logger.LogInformation("Existing CMS content found — skipping catalog seed so uploaded logos and edits stay as-is");
+            return;
+        }
+
         await SeedServicesAsync();
         await SeedProductsAsync();
         await SeedIndustriesAsync();
@@ -36,6 +52,8 @@ public class DatabaseSeeder
         await SeedSiteSettingsAsync();
         await SeedSeoSettingsAsync();
         await SeedMissingSeoPagesAsync();
+        await DeecContentAligner.ApplyAsync(_context);
+        _logger.LogInformation("Initial DEEC content pack applied");
         _logger.LogInformation("Database seeding completed");
     }
 
@@ -110,6 +128,32 @@ public class DatabaseSeeder
         await _context.SaveChangesAsync();
     }
 
+    private async Task SeedMissingOperationalRolesAsync()
+    {
+        var needed = new (string Name, string Description)[]
+        {
+            (AppRoles.Staff, "Staff workspace — modules coming soon"),
+            (AppRoles.Accounting, "Accounting workspace — modules coming soon"),
+            (AppRoles.Admin, "Company admin workspace — modules coming soon"),
+        };
+
+        var added = 0;
+        foreach (var (name, description) in needed)
+        {
+            if (await _context.Roles.AnyAsync(r => r.Name == name))
+                continue;
+
+            _context.Roles.Add(new Role { Name = name, Description = description });
+            added++;
+        }
+
+        if (added == 0)
+            return;
+
+        await _context.SaveChangesAsync();
+        _logger.LogInformation("Added {Count} operational role(s) without CMS permissions", added);
+    }
+
     private async Task SeedAdminUserAsync()
     {
         if (await _context.Users.AnyAsync())
@@ -170,6 +214,9 @@ public class DatabaseSeeder
 
     private async Task SeedProductsAsync()
     {
+        if (await _context.SoftwareProducts.AnyAsync())
+            return;
+
         var products = new[]
         {
             "ECMS",
@@ -226,6 +273,9 @@ public class DatabaseSeeder
 
     private async Task SeedIndustriesAsync()
     {
+        if (await _context.Industries.AnyAsync())
+            return;
+
         var industries = new[]
         {
             "Healthcare",
@@ -265,6 +315,9 @@ public class DatabaseSeeder
 
     private async Task SeedFaqAsync()
     {
+        if (await _context.FaqItems.AnyAsync())
+            return;
+
         var items = new (string Question, string Answer)[]
         {
             ("What industries does TRANS-NET serve?", "We serve healthcare, finance, retail, logistics, education, government, and many other sectors with tailored software solutions."),
@@ -290,6 +343,9 @@ public class DatabaseSeeder
 
     private async Task SeedSiteStatsAsync()
     {
+        if (await _context.SiteStats.AnyAsync())
+            return;
+
         var items = new (string Value, string Label, string Icon)[]
         {
             ("50+", "Happy Clients", "users"),
@@ -314,6 +370,9 @@ public class DatabaseSeeder
 
     private async Task SeedCompanyHighlightsAsync()
     {
+        if (await _context.CompanyHighlights.AnyAsync())
+            return;
+
         var items = new (string Title, string Description)[]
         {
             ("Enterprise Expertise", "Proven track record delivering scalable solutions for global organizations."),
@@ -338,6 +397,9 @@ public class DatabaseSeeder
 
     private async Task SeedProcessStepsAsync()
     {
+        if (await _context.ProcessSteps.AnyAsync())
+            return;
+
         var items = new (string Step, string Title, string Description)[]
         {
             ("01", "Discovery", "We analyze your business goals, users, and technical requirements."),
@@ -364,6 +426,9 @@ public class DatabaseSeeder
 
     private async Task SeedTechnologiesAsync()
     {
+        if (await _context.Technologies.AnyAsync())
+            return;
+
         var technologies = new (string Name, string Category)[]
         {
             ("React", "Frontend"),
@@ -405,6 +470,9 @@ public class DatabaseSeeder
 
     private async Task SeedClientsAsync()
     {
+        if (await _context.Clients.AnyAsync())
+            return;
+
         var clients = new (string Name, string Website)[]
         {
             ("MetroHealth Systems", "https://example.com"),
@@ -436,6 +504,9 @@ public class DatabaseSeeder
 
     private async Task SeedTestimonialsAsync()
     {
+        if (await _context.Testimonials.AnyAsync())
+            return;
+
         var items = new (string Name, string Company, string Quote, int SortOrder, int Rating)[]
         {
             (
@@ -490,6 +561,9 @@ public class DatabaseSeeder
 
     private async Task SeedBlogsAsync()
     {
+        if (await _context.Blogs.AnyAsync())
+            return;
+
         var categoryName = "Insights";
         var categorySlug = "insights";
 
@@ -559,14 +633,102 @@ public class DatabaseSeeder
         await _context.SaveChangesAsync();
     }
 
+    private async Task SeedMissingIntroLabelsAsync()
+    {
+        var extras = new (string Key, string Value, string Group)[]
+        {
+            ("home_intro_eyebrow", "What we do", "home"),
+            ("home_intro_story_label", "Our story", "home"),
+            ("home_intro_services_label", "All services", "home"),
+        };
+
+        foreach (var (key, value, group) in extras)
+        {
+            var exists = await _context.SiteSettings.AnyAsync(s => s.Key == key);
+            if (exists) continue;
+
+            _context.SiteSettings.Add(new SiteSetting
+            {
+                Key = key,
+                Value = value,
+                Group = group,
+                IsPublic = true,
+            });
+        }
+
+        await _context.SaveChangesAsync();
+    }
+
+    private async Task SeedMissingServicesPageSettingsAsync()
+    {
+        var extras = new (string Key, string Value, string Group)[]
+        {
+            ("services_page_highlight", "Periodic check-up of components and parts", "pages"),
+            ("services_page_image", "/uploads/pages/service-01.jpg", "pages"),
+            ("services_page_image_2", "/uploads/pages/service-02.png", "pages"),
+            ("services_cta_label", "Request a quote", "pages"),
+            ("services_cta_title", "Need service for your equipment?", "pages"),
+            ("services_cta_subtitle", "Tell us the building, the brand, and what needs attention — we will help you plan the right maintenance path.", "pages"),
+            ("services_related_eyebrow", "Also available", "pages"),
+            ("services_related_title", "Other services", "pages"),
+        };
+
+        foreach (var (key, value, group) in extras)
+        {
+            var exists = await _context.SiteSettings.AnyAsync(s => s.Key == key);
+            if (exists) continue;
+
+            _context.SiteSettings.Add(new SiteSetting
+            {
+                Key = key,
+                Value = value,
+                Group = group,
+                IsPublic = true,
+            });
+        }
+
+        await _context.SaveChangesAsync();
+    }
+
+    private async Task SeedMissingAboutPageSettingsAsync()
+    {
+        var extras = new (string Key, string Value, string Group)[]
+        {
+            ("about_values_eyebrow", "Core values", "about"),
+            ("about_values_title", "How we work", "about"),
+            ("about_values", "Integrity\nDiscipline\nEfficiency\nAccountability", "about"),
+            ("about_assessment_title", "Free assessment and consultation", "about"),
+            ("about_assessment_body", "For existing equipment and new inquiries within Metro Manila, Mega Manila, and nearby cities.", "about"),
+            ("about_controls_note", "Our technical team works with Monarch, Step, Fusion/Nidec/Kinitek, Fuji Sunrise, SJ Siemens, SM Series, BL, Yaskawa, Variespeed, Panasonic, Ningbo, Flying, Selcom, and other common controls. Most elevator companies carry different brand names but often use the same type of control system.", "about"),
+            ("about_story_image_2", "/uploads/pages/about-us-02.png", "about"),
+            ("about_story_image_3", "/uploads/pages/about-us-03.png", "about"),
+        };
+
+        foreach (var (key, value, group) in extras)
+        {
+            var exists = await _context.SiteSettings.AnyAsync(s => s.Key == key);
+            if (exists) continue;
+
+            _context.SiteSettings.Add(new SiteSetting
+            {
+                Key = key,
+                Value = value,
+                Group = group,
+                IsPublic = true,
+            });
+        }
+
+        await _context.SaveChangesAsync();
+    }
+
     private async Task SeedSiteSettingsAsync()
     {
         var settings = new (string Key, string Value, string Group, bool IsPublic)[]
         {
-            ("company_name", "TRANS-NET", "general", true),
-            ("company_logo", "/logo.png", "branding", true),
+            ("company_name", "DREAM", "general", true),
+            ("company_logo", "", "branding", true),
             ("company_logo_media", "png", "branding", true),
-            ("company_tagline", "Software Development Services", "branding", true),
+            ("company_tagline", "Elevator & Escalator Corp.", "branding", true),
             ("header_style", "navy", "branding", true),
             ("header_bg_color", "#0a1a2e", "branding", true),
             ("company_email", "info@trans-net.com", "contact", true),
@@ -578,6 +740,8 @@ public class DatabaseSeeder
             ("smtp_password", "", "email", false),
             ("smtp_enable_ssl", "true", "email", false),
             ("company_phone", "+1-800-TRANS-NET", "contact", true),
+            ("company_email_alt", "dreamelevator@myyahoo.com", "contact", true),
+            ("company_mobiles", "0927 612 6421\n0933 856 0622\n0991 341 0811", "contact", true),
             ("company_address", "Metro Manila, Philippines", "contact", true),
             ("footer_text", "Custom software development for businesses that need reliable delivery and a long-term development partner.", "general", true),
             ("social_facebook", "https://facebook.com/transnet", "social", true),
@@ -589,6 +753,7 @@ public class DatabaseSeeder
             ("hero_agency_label", "Enterprise software development", "home", true),
             ("hero_theme_preset", "light", "home", true),
             ("hero_image_overlay", "85", "home", true),
+            ("hero_overlay_color", "#f8fafc", "home", true),
             ("hero_layout_mode", "static", "home", true),
             ("hero_carousel_interval", "7", "home", true),
             ("hero_carousel_autoplay", "true", "home", true),
@@ -597,6 +762,9 @@ public class DatabaseSeeder
             ("hero_title_highlight", "empowered by people", "home", true),
             ("company_established", "Est. 2010", "home", true),
             ("company_hq_label", "Global delivery", "home", true),
+            ("home_intro_eyebrow", "What we do", "home", true),
+            ("home_intro_story_label", "Our story", "home", true),
+            ("home_intro_services_label", "All services", "home", true),
             ("home_intro_line1", "A software partner focused on", "home", true),
             ("home_intro_line2", "delivering value", "home", true),
             ("home_intro_line3", "", "home", true),
@@ -641,7 +809,7 @@ public class DatabaseSeeder
             ("home_featured_product_eyebrow", "Featured product", "home", true),
             ("home_featured_product_title", "Software built for real operations", "home", true),
             ("home_featured_product_subtitle", "Explore our flagship solution — designed for teams that need reliability, visibility, and scale.", "home", true),
-            ("home_featured_product_theme_preset", "navy", "home", true),
+            ("home_featured_product_theme_preset", "light", "home", true),
             ("home_products_eyebrow", "Products", "home", true),
             ("home_products_title", "Software Solutions", "home", true),
             ("home_products_subtitle", "Ready-to-deploy and customizable enterprise software products.", "home", true),
@@ -718,11 +886,19 @@ public class DatabaseSeeder
             ("blog_page_subtitle", "Insights, trends, and best practices.", "pages", true),
             ("industries_page_title", "Industries We Serve", "pages", true),
             ("industries_page_subtitle", "Domain expertise across diverse sectors.", "pages", true),
-            ("services_page_title", "Our Services", "pages", true),
-            ("services_page_subtitle", "Comprehensive software solutions — from custom applications and web platforms to mobile apps and ongoing support.", "pages", true),
+            ("services_page_title", "Service & Maintenance", "pages", true),
+            ("services_page_subtitle", "Affordable, quality maintenance for all types and brands of elevators, escalators, and related equipment.", "pages", true),
+            ("services_page_highlight", "Periodic check-up of components and parts", "pages", true),
+            ("services_page_image", "/uploads/pages/service-01.jpg", "pages", true),
+            ("services_page_image_2", "/uploads/pages/service-02.png", "pages", true),
+            ("services_cta_label", "Request a quote", "pages", true),
+            ("services_cta_title", "Need service for your equipment?", "pages", true),
+            ("services_cta_subtitle", "Tell us the building, the brand, and what needs attention — we will help you plan the right maintenance path.", "pages", true),
+            ("services_related_eyebrow", "Also available", "pages", true),
+            ("services_related_title", "Other services", "pages", true),
             ("services_section_eyebrow", "What we do", "pages", true),
-            ("services_section_title", "End-to-End Software Solutions", "pages", true),
-            ("services_section_subtitle", "We partner with businesses to design, build, deploy, and maintain software that drives real outcomes.", "pages", true),
+            ("services_section_title", "Elevators, escalators, and complete support", "pages", true),
+            ("services_section_subtitle", "Supply, installation, modernization, maintenance, parts, and structural shafts — tailored to each building.", "pages", true),
             ("about_industries_eyebrow", "Industries", "about", true),
             ("about_industries_title", "Sector Expertise", "about", true),
             ("about_industries_subtitle", "Deep domain knowledge across diverse industries — from healthcare to logistics.", "about", true),
@@ -743,8 +919,8 @@ public class DatabaseSeeder
             ("products_cta_primary_label", "Request a demo", "products", true),
             ("products_cta_secondary_label", "Explore services", "products", true),
             ("products_hero_dark_bg", "true", "sections", true),
-            ("products_featured_dark_bg", "true", "sections", true),
-            ("products_featured_theme_preset", "navy", "products", true),
+            ("products_featured_dark_bg", "false", "sections", true),
+            ("products_featured_theme_preset", "light", "products", true),
             ("products_catalog_dark_bg", "false", "sections", true),
             ("products_cta_dark_bg", "false", "sections", true),
             ("products_featured_enabled", "true", "products", true),
@@ -790,11 +966,11 @@ public class DatabaseSeeder
             ("home_portfolio_dark_bg", "false", "sections", true),
             ("home_clients_dark_bg", "false", "sections", true),
             ("home_technologies_dark_bg", "false", "sections", true),
-            ("home_featured_product_dark_bg", "true", "sections", true),
+            ("home_featured_product_dark_bg", "false", "sections", true),
             ("home_products_dark_bg", "false", "sections", true),
             ("home_industries_dark_bg", "false", "sections", true),
             ("home_why_dark_bg", "false", "sections", true),
-            ("home_process_dark_bg", "true", "sections", true),
+            ("home_process_dark_bg", "false", "sections", true),
             ("home_testimonials_dark_bg", "false", "sections", true),
             ("home_faq_dark_bg", "false", "sections", true),
             ("home_blog_dark_bg", "false", "sections", true),
@@ -804,7 +980,7 @@ public class DatabaseSeeder
             ("about_story_dark_bg", "false", "sections", true),
             ("about_stats_dark_bg", "false", "sections", true),
             ("about_why_dark_bg", "false", "sections", true),
-            ("about_process_dark_bg", "true", "sections", true),
+            ("about_process_dark_bg", "false", "sections", true),
             ("about_industries_dark_bg", "false", "sections", true),
             ("about_products_promo_dark_bg", "true", "sections", true),
             ("about_cta_dark_bg", "false", "sections", true),
@@ -819,6 +995,12 @@ public class DatabaseSeeder
             ("portfolio_list_dark_bg", "false", "sections", true),
             ("industries_list_dark_bg", "false", "sections", true),
             ("contact_main_dark_bg", "false", "sections", true),
+            ("gallery_list_dark_bg", "false", "sections", true),
+            ("clients_list_dark_bg", "false", "sections", true),
+            ("gallery_page_title", "Gallery", "pages", true),
+            ("gallery_page_subtitle", "Jobsite photos from installation, modernization, and service work across residential and commercial buildings.", "pages", true),
+            ("clients_page_title", "Our valued clients", "pages", true),
+            ("clients_page_subtitle", "Buildings and facilities we are proud to serve.", "pages", true),
         };
 
         foreach (var (key, value, group, isPublic) in settings)
@@ -846,14 +1028,14 @@ public class DatabaseSeeder
 
         var pages = new (string PageKey, string Title, string Description)[]
         {
-            ("home", "TRANS-NET | Software Development Company", "TRANS-NET delivers custom software, web, mobile, and enterprise solutions."),
-            ("about", "About TRANS-NET", "Learn about TRANS-NET's mission, team, and expertise."),
-            ("services", "Our Services | TRANS-NET", "Explore TRANS-NET software development services."),
-            ("products", "Software Products | TRANS-NET", "Enterprise software products — ECMS, CRM, ERP and more from TRANS-NET."),
-            ("portfolio", "Portfolio | TRANS-NET", "View TRANS-NET project portfolio and case studies."),
-            ("industries", "Industries | TRANS-NET", "Industries we serve with tailored software solutions."),
-            ("contact", "Contact TRANS-NET", "Get in touch with TRANS-NET for your software needs."),
-            ("careers", "Careers at TRANS-NET", "Join TRANS-NET and build innovative software solutions.")
+            ("home", "DREAM | Elevator & Escalator Corp.", "DREAM — Elevator & Escalator Corp."),
+            ("about", "About DREAM", "Learn about DREAM's mission, team, and expertise."),
+            ("services", "Our Services | DREAM", "Explore DREAM elevator and escalator services."),
+            ("products", "Products | DREAM", "Elevator and escalator products from DREAM."),
+            ("portfolio", "Portfolio | DREAM", "View DREAM project portfolio and case studies."),
+            ("industries", "Industries | DREAM", "Industries we serve with tailored elevator and escalator solutions."),
+            ("contact", "Contact DREAM", "Get in touch with DREAM for your elevator and escalator needs."),
+            ("careers", "Careers at DREAM", "Join DREAM and build reliable vertical transportation solutions.")
         };
 
         foreach (var (pageKey, title, description) in pages)
@@ -863,7 +1045,7 @@ public class DatabaseSeeder
                 PageKey = pageKey,
                 Title = title,
                 Description = description,
-                Keywords = "software development, web development, mobile apps, TRANS-NET",
+                Keywords = "elevator, escalator, DREAM",
                 OgImage = "/uploads/og-default.jpg",
                 IsPublished = true
             });
@@ -876,11 +1058,13 @@ public class DatabaseSeeder
     {
         var pages = new (string PageKey, string Title, string Description)[]
         {
-            ("products", "Software Products | TRANS-NET", "Enterprise software products — ECMS, CRM, ERP and more from TRANS-NET."),
-            ("technologies", "Technologies | TRANS-NET", "Modern technology stack used by TRANS-NET."),
-            ("blog", "Blog | TRANS-NET", "Latest articles and insights from TRANS-NET."),
-            ("privacy", "Privacy Policy | TRANS-NET", "TRANS-NET privacy policy."),
-            ("terms", "Terms & Conditions | TRANS-NET", "TRANS-NET terms and conditions."),
+            ("products", "Products | DREAM", "Elevator and escalator products from DREAM."),
+            ("technologies", "Technologies | DREAM", "Technology and systems used by DREAM."),
+            ("blog", "Blog | DREAM", "Latest articles and insights from DREAM."),
+            ("privacy", "Privacy Policy | DREAM", "DREAM privacy policy."),
+            ("terms", "Terms & Conditions | DREAM", "DREAM terms and conditions."),
+            ("gallery", "Gallery | DREAM", "Jobsite photos from elevator and escalator installation, modernization, and service work."),
+            ("clients", "Our Valued Clients | DREAM", "Buildings and facilities served by DREAM Elevator & Escalator Corp."),
         };
 
         foreach (var (pageKey, title, description) in pages)
@@ -893,11 +1077,65 @@ public class DatabaseSeeder
                 PageKey = pageKey,
                 Title = title,
                 Description = description,
-                Keywords = "software development, web development, mobile apps, TRANS-NET",
+                Keywords = "elevator, escalator, DREAM",
                 OgImage = "/uploads/og-default.jpg",
                 IsPublished = true
             });
             await _context.SaveChangesAsync();
         }
+    }
+
+    private async Task SeedMissingInventoryPermissionsAsync()
+    {
+        const string module = "InventoryParts";
+        var added = 0;
+        foreach (var suffix in new[] { "Read", "Write" })
+        {
+            var name = $"{module}.{suffix}";
+            if (await _context.Permissions.AnyAsync(p => p.Name == name))
+                continue;
+
+            _context.Permissions.Add(new Permission { Name = name, Module = module });
+            added++;
+        }
+
+        if (added == 0)
+            return;
+
+        await _context.SaveChangesAsync();
+        _logger.LogInformation("Added {Count} inventory permission(s)", added);
+    }
+
+    private async Task SeedInventoryPartsIfEmptyAsync()
+    {
+        if (await _context.InventoryParts.AnyAsync())
+            return;
+
+        foreach (var row in InventoryPartSeedRows.All)
+        {
+            DateTime? purchasedAt = null;
+            if (!string.IsNullOrWhiteSpace(row.PurchasedAt) && DateTime.TryParse(row.PurchasedAt, out var parsed))
+                purchasedAt = DateTime.SpecifyKind(parsed.Date, DateTimeKind.Utc);
+
+            _context.InventoryParts.Add(new InventoryPart
+            {
+                PurchasedAt = purchasedAt,
+                Supplier = row.Supplier,
+                Item = row.Item,
+                Specification = row.Specification,
+                Quantity = row.Quantity,
+                UnitPrice = row.UnitPrice,
+                TotalPrice = row.TotalPrice,
+                AmountInPeso = row.AmountInPeso,
+                ProjectBuilding = row.ProjectBuilding,
+                LineKind = row.LineKind,
+                Currency = "USD",
+                SortOrder = row.SortOrder,
+                IsPublished = true
+            });
+        }
+
+        await _context.SaveChangesAsync();
+        _logger.LogInformation("Seeded {Count} inventory lines from the parts register", InventoryPartSeedRows.All.Count);
     }
 }

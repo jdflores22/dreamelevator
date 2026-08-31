@@ -28,7 +28,7 @@ export function SectionHeading({
   return (
     <div
       className={cn(
-        'mb-12 max-w-3xl',
+        'mb-8 max-w-3xl sm:mb-12',
         align === 'center' && 'mx-auto text-center',
         className,
       )}
@@ -36,19 +36,27 @@ export function SectionHeading({
       {eyebrow && (
         <p
           className={cn(
-            theme === 'dark' ? 'pro-eyebrow-dark mb-3' : 'pro-eyebrow mb-3',
+            'mb-3 inline-flex items-center gap-2.5',
+            theme === 'dark' ? 'pro-eyebrow-dark' : 'pro-eyebrow',
           )}
         >
+          <span
+            className={cn(
+              'inline-block h-3 w-[3px]',
+              theme === 'dark' ? 'bg-brand-gold-400' : 'bg-brand-gold-500',
+            )}
+            aria-hidden
+          />
           {eyebrow}
         </p>
       )}
       <h2
         className={cn(
-          'font-semibold tracking-tight',
+          'font-semibold tracking-tight text-pretty',
           theme === 'dark' ? 'text-white' : 'text-primary-900',
           size === 'large'
-            ? 'text-3xl sm:text-4xl lg:text-[2.75rem] lg:leading-tight'
-            : 'text-2xl sm:text-3xl lg:text-4xl',
+            ? 'text-2xl sm:text-4xl lg:text-[2.75rem] lg:leading-tight'
+            : 'text-xl sm:text-3xl lg:text-4xl',
         )}
       >
         {title}

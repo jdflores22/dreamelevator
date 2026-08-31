@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { useAuth } from '@/api/hooks';
+import { homePathForRole, isCmsAdminPath, isCmsRole } from '@/constants/roles';
 import { useAuthStore } from '@/store/authStore';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -18,6 +19,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const user = useAuthStore((s) => s.user);
   const { loginMutation } = useAuth();
   const {
     register,
@@ -28,12 +30,16 @@ export default function LoginPage() {
   const from = (location.state as { from?: { pathname: string } })?.from?.pathname || '/admin';
 
   if (isAuthenticated) {
-    return <Navigate to={from} replace />;
+    return <Navigate to={homePathForRole(user?.role)} replace />;
   }
 
   const onSubmit = (data: FormData) => {
     loginMutation.mutate(data, {
-      onSuccess: () => navigate(from, { replace: true }),
+      onSuccess: (result) => {
+        const role = result.user.roleName ?? result.user.role;
+        const dest = isCmsRole(role) && isCmsAdminPath(from) ? from : homePathForRole(role);
+        navigate(dest, { replace: true });
+      },
     });
   };
 
@@ -59,7 +65,7 @@ export default function LoginPage() {
         {...register('password')}
       />
       <Button type="submit" className="w-full" size="lg" isLoading={loginMutation.isPending}>
-        Sign in to CMS
+        Sign in
       </Button>
     </form>
   );

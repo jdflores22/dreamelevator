@@ -67,7 +67,28 @@ import type {
   Role,
   Subscriber,
   JobApplication,
+  InventoryDashboard,
+  InventoryFilters,
+  InventoryIssuance,
+  InventoryIssuanceListParams,
+  InventoryIssuanceOptions,
+  InventoryListParams,
+  InventoryPart,
+  Employee,
+  EmployeeListParams,
+  EmployeeProfile,
+  StockLedger,
+  StockMovement,
+  StockMovementListParams,
+  Supplier,
+  SupplierListParams,
+  UpsertEmployee,
+  UpsertInventoryIssuance,
+  UpsertInventoryPart,
+  UpsertStockMovement,
+  UpsertSupplier,
 } from '@/types';
+import { isCmsRole } from '@/constants/roles';
 import { useAuthStore } from '@/store/authStore';
 import { toast } from '@/store/toastStore';
 
@@ -248,9 +269,10 @@ export function useAuth() {
 
 export function useDashboardStats() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const role = useAuthStore((s) => s.user?.role);
   return useQuery({
     queryKey: ['dashboard', 'stats'],
-    enabled: isAuthenticated,
+    enabled: isAuthenticated && isCmsRole(role),
     queryFn: async () => {
       const { data } = await apiClient.get<ApiResponse<DashboardStats>>('/dashboard/stats');
       return data.data;
@@ -445,6 +467,7 @@ export function useSiteSettings() {
       const { data } = await apiClient.get<ApiResponse<SiteSetting[]>>('/settings');
       return data.data;
     },
+    staleTime: 30_000,
   });
 }
 
@@ -453,6 +476,17 @@ export function useUpdateSiteSetting() {
   return useMutation({
     mutationFn: async ({ id, data: payload }: { id: string; data: UpdateSiteSetting }) => {
       const { data } = await apiClient.put<ApiResponse<SiteSetting>>(`/settings/${id}`, payload);
+      return data.data;
+    },
+    onSuccess: () => invalidateSettings(queryClient),
+  });
+}
+
+export function useUpsertSiteSettings() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (items: CreateSiteSetting[]) => {
+      const { data } = await apiClient.put<ApiResponse<SiteSetting[]>>('/settings/bulk', items);
       return data.data;
     },
     onSuccess: () => invalidateSettings(queryClient),
@@ -587,5 +621,399 @@ export function useSendTestEmail() {
       const { data } = await apiClient.post<ApiResponse<EmailTestResult>>('/email/test', to ? { to } : {});
       return data.data!;
     },
+  });
+}
+
+const inventoryHooks = createResourceHooks<InventoryPart, UpsertInventoryPart, UpsertInventoryPart>(
+  'InventoryParts',
+);
+export const useCreateInventoryPart = inventoryHooks.useCreate;
+export const useUpdateInventoryPart = inventoryHooks.useUpdate;
+export const useDeleteInventoryPart = inventoryHooks.useDelete;
+
+export function useAdminInventory(params: InventoryListParams = {}, options?: { enabled?: boolean }) {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  return useQuery({
+    queryKey: ['InventoryParts', 'list', params],
+    enabled: isAuthenticated && (options?.enabled ?? true),
+    queryFn: async () => {
+      const { data } = await apiClient.get<ApiResponse<InventoryPart[]>>('/InventoryParts', {
+        params: {
+          search: params.search || undefined,
+          supplier: params.supplier || undefined,
+          project: params.project || undefined,
+          lineKind: params.lineKind || undefined,
+          from: params.from || undefined,
+          to: params.to || undefined,
+          page: params.page ?? 1,
+          pageSize: params.pageSize ?? 50,
+        },
+      });
+      return { items: data.data ?? [], meta: data.meta };
+    },
+  });
+}
+
+export function useInventoryDashboard() {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  return useQuery({
+    queryKey: ['InventoryParts', 'dashboard'],
+    enabled: isAuthenticated,
+    queryFn: async () => {
+      const { data } = await apiClient.get<ApiResponse<InventoryDashboard>>('/InventoryParts/dashboard');
+      return data.data;
+    },
+  });
+}
+
+export function useInventoryFilters() {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  return useQuery({
+    queryKey: ['InventoryParts', 'filters'],
+    enabled: isAuthenticated,
+    queryFn: async () => {
+      const { data } = await apiClient.get<ApiResponse<InventoryFilters>>('/InventoryParts/filters');
+      return data.data;
+    },
+  });
+}
+
+export function useAdminInventoryIssuances(params: InventoryIssuanceListParams = {}) {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  return useQuery({
+    queryKey: ['InventoryIssuances', 'list', params],
+    enabled: isAuthenticated,
+    queryFn: async () => {
+      const { data } = await apiClient.get<ApiResponse<InventoryIssuance[]>>('/InventoryIssuances', {
+        params: {
+          search: params.search || undefined,
+          clientId: params.clientId || undefined,
+          inventoryPartId: params.inventoryPartId || undefined,
+          employeeId: params.employeeId || undefined,
+          from: params.from || undefined,
+          to: params.to || undefined,
+          page: params.page ?? 1,
+          pageSize: params.pageSize ?? 25,
+        },
+      });
+      return { items: data.data ?? [], meta: data.meta };
+    },
+  });
+}
+
+export function useInventoryIssuance(id?: string) {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  return useQuery({
+    queryKey: ['InventoryIssuances', 'detail', id],
+    enabled: isAuthenticated && Boolean(id),
+    queryFn: async () => {
+      const { data } = await apiClient.get<ApiResponse<InventoryIssuance>>(`/InventoryIssuances/${id}`);
+      return data.data!;
+    },
+  });
+}
+
+export function useInventoryIssuanceOptions() {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  return useQuery({
+    queryKey: ['InventoryIssuances', 'options'],
+    enabled: isAuthenticated,
+    queryFn: async () => {
+      const { data } = await apiClient.get<ApiResponse<InventoryIssuanceOptions>>('/InventoryIssuances/options');
+      return data.data;
+    },
+  });
+}
+
+function inventoryApiError(error: unknown, fallback: string) {
+  if (error && typeof error === 'object') {
+    const maybe = error as {
+      response?: { data?: { message?: string; errors?: string[] } };
+      message?: string;
+    };
+    return maybe.response?.data?.errors?.[0] ?? maybe.response?.data?.message ?? maybe.message ?? fallback;
+  }
+  return fallback;
+}
+
+export function useCreateInventoryIssuance() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload: UpsertInventoryIssuance) => {
+      const { data } = await apiClient.post<ApiResponse<InventoryIssuance>>('/InventoryIssuances', payload);
+      return data.data!;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['InventoryIssuances'] });
+      queryClient.invalidateQueries({ queryKey: ['InventoryParts'] });
+      toast.success('Stock out recorded');
+    },
+    onError: (err: unknown) => toast.error(inventoryApiError(err, 'Failed to record stock out')),
+  });
+}
+
+export function useUpdateInventoryIssuance() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, data: payload }: { id: string; data: UpsertInventoryIssuance }) => {
+      const { data } = await apiClient.put<ApiResponse<InventoryIssuance>>(`/InventoryIssuances/${id}`, payload);
+      return data.data!;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['InventoryIssuances'] });
+      queryClient.invalidateQueries({ queryKey: ['InventoryParts'] });
+      toast.success('Stock out updated');
+    },
+    onError: (err: unknown) => toast.error(inventoryApiError(err, 'Failed to update stock out')),
+  });
+}
+
+export function useDeleteInventoryIssuance() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      await apiClient.delete<ApiResponse<object>>(`/InventoryIssuances/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['InventoryIssuances'] });
+      queryClient.invalidateQueries({ queryKey: ['InventoryParts'] });
+      toast.success('Stock out deleted');
+    },
+    onError: (err: unknown) => toast.error(inventoryApiError(err, 'Failed to delete stock out')),
+  });
+}
+
+/** Renaming a supplier rewrites register lines, so refresh inventory queries too. */
+function invalidateSuppliers(queryClient: ReturnType<typeof useQueryClient>) {
+  queryClient.invalidateQueries({ queryKey: ['Suppliers'] });
+  queryClient.invalidateQueries({ queryKey: ['InventoryParts'] });
+}
+
+export function useSuppliers(params: SupplierListParams = {}) {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  return useQuery({
+    queryKey: ['Suppliers', 'list', params],
+    enabled: isAuthenticated,
+    queryFn: async () => {
+      const { data } = await apiClient.get<ApiResponse<Supplier[]>>('/Suppliers', {
+        params: {
+          search: params.search || undefined,
+          activeOnly: params.activeOnly ? true : undefined,
+          page: params.page ?? 1,
+          pageSize: params.pageSize ?? 100,
+        },
+      });
+      return { items: data.data ?? [], meta: data.meta };
+    },
+  });
+}
+
+export function useCreateSupplier() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload: UpsertSupplier) => {
+      const { data } = await apiClient.post<ApiResponse<Supplier>>('/Suppliers', payload);
+      return data.data!;
+    },
+    onSuccess: () => {
+      invalidateSuppliers(queryClient);
+      toast.success('Supplier added');
+    },
+    onError: (err: unknown) => toast.error(inventoryApiError(err, 'Failed to add supplier')),
+  });
+}
+
+export function useUpdateSupplier() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, data: payload }: { id: string; data: UpsertSupplier }) => {
+      const { data } = await apiClient.put<ApiResponse<Supplier>>(`/Suppliers/${id}`, payload);
+      return data.data!;
+    },
+    onSuccess: () => {
+      invalidateSuppliers(queryClient);
+      toast.success('Supplier updated');
+    },
+    onError: (err: unknown) => toast.error(inventoryApiError(err, 'Failed to update supplier')),
+  });
+}
+
+export function useDeleteSupplier() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      await apiClient.delete<ApiResponse<object>>(`/Suppliers/${id}`);
+    },
+    onSuccess: () => {
+      invalidateSuppliers(queryClient);
+      toast.success('Supplier deleted');
+    },
+    onError: (err: unknown) => toast.error(inventoryApiError(err, 'Failed to delete supplier')),
+  });
+}
+
+/** Renaming an employee rewrites past slips, so refresh stock-out queries too. */
+function invalidateEmployees(queryClient: ReturnType<typeof useQueryClient>) {
+  queryClient.invalidateQueries({ queryKey: ['Employees'] });
+  queryClient.invalidateQueries({ queryKey: ['InventoryIssuances'] });
+}
+
+export function useEmployees(params: EmployeeListParams = {}) {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  return useQuery({
+    queryKey: ['Employees', 'list', params],
+    enabled: isAuthenticated,
+    queryFn: async () => {
+      const { data } = await apiClient.get<ApiResponse<Employee[]>>('/Employees', {
+        params: {
+          search: params.search || undefined,
+          department: params.department || undefined,
+          activeOnly: params.activeOnly ? true : undefined,
+          page: params.page ?? 1,
+          pageSize: params.pageSize ?? 100,
+        },
+      });
+      return { items: data.data ?? [], meta: data.meta };
+    },
+  });
+}
+
+export function useEmployeeProfile(id?: string) {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  return useQuery({
+    queryKey: ['Employees', 'profile', id],
+    enabled: isAuthenticated && Boolean(id),
+    queryFn: async () => {
+      const { data } = await apiClient.get<ApiResponse<EmployeeProfile>>(`/Employees/${id}/profile`);
+      return data.data!;
+    },
+  });
+}
+
+export function useEmployeeDepartments() {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  return useQuery({
+    queryKey: ['Employees', 'departments'],
+    enabled: isAuthenticated,
+    queryFn: async () => {
+      const { data } = await apiClient.get<ApiResponse<string[]>>('/Employees/departments');
+      return data.data ?? [];
+    },
+  });
+}
+
+export function useCreateEmployee() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload: UpsertEmployee) => {
+      const { data } = await apiClient.post<ApiResponse<Employee>>('/Employees', payload);
+      return data.data!;
+    },
+    onSuccess: () => {
+      invalidateEmployees(queryClient);
+      toast.success('Employee added');
+    },
+    onError: (err: unknown) => toast.error(inventoryApiError(err, 'Failed to add employee')),
+  });
+}
+
+export function useUpdateEmployee() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, data: payload }: { id: string; data: UpsertEmployee }) => {
+      const { data } = await apiClient.put<ApiResponse<Employee>>(`/Employees/${id}`, payload);
+      return data.data!;
+    },
+    onSuccess: () => {
+      invalidateEmployees(queryClient);
+      toast.success('Employee updated');
+    },
+    onError: (err: unknown) => toast.error(inventoryApiError(err, 'Failed to update employee')),
+  });
+}
+
+export function useDeleteEmployee() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      await apiClient.delete<ApiResponse<object>>(`/Employees/${id}`);
+    },
+    onSuccess: () => {
+      invalidateEmployees(queryClient);
+      toast.success('Employee removed');
+    },
+    onError: (err: unknown) => toast.error(inventoryApiError(err, 'Failed to remove employee')),
+  });
+}
+
+/** A movement changes on-hand, so every stock view has to refetch. */
+function invalidateStock(queryClient: ReturnType<typeof useQueryClient>) {
+  queryClient.invalidateQueries({ queryKey: ['StockMovements'] });
+  queryClient.invalidateQueries({ queryKey: ['InventoryParts'] });
+  queryClient.invalidateQueries({ queryKey: ['InventoryIssuances'] });
+  queryClient.invalidateQueries({ queryKey: ['Employees'] });
+}
+
+export function useStockMovements(params: StockMovementListParams = {}) {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  return useQuery({
+    queryKey: ['StockMovements', 'list', params],
+    enabled: isAuthenticated,
+    queryFn: async () => {
+      const { data } = await apiClient.get<ApiResponse<StockMovement[]>>('/StockMovements', {
+        params: {
+          search: params.search || undefined,
+          movementType: params.movementType || undefined,
+          inventoryPartId: params.inventoryPartId || undefined,
+          employeeId: params.employeeId || undefined,
+          from: params.from || undefined,
+          to: params.to || undefined,
+          page: params.page ?? 1,
+          pageSize: params.pageSize ?? 25,
+        },
+      });
+      return { items: data.data ?? [], meta: data.meta };
+    },
+  });
+}
+
+export function useStockLedger(partId?: string) {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  return useQuery({
+    queryKey: ['StockMovements', 'ledger', partId],
+    enabled: isAuthenticated && Boolean(partId),
+    queryFn: async () => {
+      const { data } = await apiClient.get<ApiResponse<StockLedger>>(`/StockMovements/ledger/${partId}`);
+      return data.data!;
+    },
+  });
+}
+
+export function useCreateStockMovement() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload: UpsertStockMovement) => {
+      const { data } = await apiClient.post<ApiResponse<StockMovement>>('/StockMovements', payload);
+      return data.data!;
+    },
+    onSuccess: (movement) => {
+      invalidateStock(queryClient);
+      toast.success(movement.delta > 0 ? 'Stock added back' : 'Stock deducted');
+    },
+    onError: (err: unknown) => toast.error(inventoryApiError(err, 'Failed to record movement')),
+  });
+}
+
+export function useDeleteStockMovement() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      await apiClient.delete<ApiResponse<object>>(`/StockMovements/${id}`);
+    },
+    onSuccess: () => {
+      invalidateStock(queryClient);
+      toast.success('Movement deleted');
+    },
+    onError: (err: unknown) => toast.error(inventoryApiError(err, 'Failed to delete movement')),
   });
 }

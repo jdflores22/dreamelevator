@@ -14,7 +14,7 @@ interface CompanyLogoImageProps {
 
 const sizeClasses = {
   sm: 'h-9 max-w-[7rem]',
-  md: 'h-11 max-w-[10rem]',
+  md: 'h-9 max-w-[7rem] sm:h-11 sm:max-w-[10rem]',
   lg: 'h-14 max-w-[12rem]',
 };
 

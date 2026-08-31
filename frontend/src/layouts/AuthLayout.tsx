@@ -1,11 +1,9 @@
 import { Outlet } from 'react-router-dom';
 import { Code2, Globe, Shield, Zap } from 'lucide-react';
 import { CompanyLogoImage } from '@/components/common/CompanyLogoImage';
-import { useSiteSettingsMap } from '@/hooks/useSiteSettingsMap';
-import { resolveMediaUrl } from '@/utils/media';
+import { BrandDocumentHead } from '@/components/common/BrandDocumentHead';
+import { useCompanyBrand } from '@/hooks/useCompanyBrand';
 import { cn } from '@/utils/cn';
-
-const DEFAULT_LOGO = '/logo.png';
 
 const highlights = [
   { icon: Code2, text: 'Manage services, products & portfolio' },
@@ -21,15 +19,13 @@ function AuthBrandLogo({
   className?: string;
   size?: 'md' | 'lg';
 }) {
-  const { get } = useSiteSettingsMap();
-  const logoSrc = resolveMediaUrl(get('company_logo', DEFAULT_LOGO));
-  const logoMedia = get('company_logo_media', 'png');
-  const companyName = get('company_name', 'TRANS-NET');
+  const { name: companyName, logoSrc, logoMedia } = useCompanyBrand();
+  if (!logoSrc) return null;
 
   return (
     <CompanyLogoImage
       src={logoSrc}
-      alt={`${companyName} logo`}
+      alt={companyName ? `${companyName} logo` : 'Logo'}
       size={size}
       mediaHint={logoMedia}
       bare
@@ -39,24 +35,24 @@ function AuthBrandLogo({
 }
 
 export function AuthLayout() {
-  const { get } = useSiteSettingsMap();
-  const companyName = get('company_name', 'TRANS-NET');
-  const tagline = get('company_tagline', 'Software Development Services');
+  const { name: companyName, tagline } = useCompanyBrand();
 
   return (
     <div className="min-h-screen lg:grid lg:grid-cols-2">
-      {/* Desktop brand panel */}
+      <BrandDocumentHead pageLabel="Sign in" />
       <aside className="admin-sidebar-bg relative hidden flex-col justify-between px-10 py-10 text-white lg:flex lg:min-h-screen lg:px-12 lg:py-12">
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand-gold-500/5 via-transparent to-brand-red-500/5" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand-gold-500/8 via-transparent to-primary-500/8" />
 
         <div className="relative">
           <AuthBrandLogo size="lg" className="object-left" />
-          <h1 className="mt-6 text-2xl font-medium tracking-tight">{companyName} CMS</h1>
-          <p className="mt-1.5 text-sm text-brand-gold-400">{tagline}</p>
+          <h1 className="mt-6 text-2xl font-medium tracking-tight">
+            {companyName ? `${companyName} CMS` : 'CMS'}
+          </h1>
+          {tagline ? <p className="mt-1.5 text-sm text-brand-gold-400">{tagline}</p> : null}
           <div className="mt-4 h-0.5 w-12 rounded-full bg-gradient-to-r from-brand-red-500 via-brand-gold-500 to-primary-400" />
           <p className="mt-5 max-w-md text-sm leading-relaxed text-slate-400">
-            Content management for your software development services website — branding,
-            services, products, portfolio, and client messages.
+            Content management for your website — branding, services, products, portfolio, and
+            client messages.
           </p>
         </div>
 
@@ -71,18 +67,20 @@ export function AuthLayout() {
           ))}
         </ul>
 
-        <p className="relative text-xs text-slate-600">© {companyName} · Admin Console</p>
+        <p className="relative text-xs text-slate-600">
+          {companyName ? `© ${companyName} · Admin Console` : 'Admin Console'}
+        </p>
       </aside>
 
-      {/* Sign-in column */}
       <div className="flex min-h-screen flex-col">
-        {/* Mobile brand header — dark bg so transparent logo reads correctly */}
-        <header className="admin-sidebar-bg relative px-6 py-8 text-center text-white lg:hidden">
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand-gold-500/5 via-transparent to-brand-red-500/5" />
+        <header className="admin-sidebar-bg relative px-6 py-8 pt-[max(2rem,env(safe-area-inset-top))] text-center text-white lg:hidden">
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand-gold-500/8 via-transparent to-primary-500/8" />
           <div className="relative flex flex-col items-center">
             <AuthBrandLogo size="md" className="mx-auto object-center" />
-            <h1 className="mt-4 text-lg font-medium">{companyName}</h1>
-            <p className="mt-1 text-xs uppercase tracking-wider text-brand-gold-400">{tagline}</p>
+            {companyName ? <h1 className="mt-4 text-lg font-medium">{companyName}</h1> : null}
+            {tagline ? (
+              <p className="mt-1 text-xs uppercase tracking-wider text-brand-gold-400">{tagline}</p>
+            ) : null}
           </div>
         </header>
 
@@ -92,7 +90,7 @@ export function AuthLayout() {
               <div className="mb-6">
                 <h2 className="text-xl font-medium text-primary-900">Sign in</h2>
                 <p className="mt-1 text-sm text-slate-500">
-                  Enter your credentials to access the CMS.
+                  Enter your credentials to continue.
                 </p>
               </div>
               <Outlet />

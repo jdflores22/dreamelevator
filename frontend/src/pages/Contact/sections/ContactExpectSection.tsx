@@ -5,6 +5,7 @@ import { SectionHeading } from '@/components/common/SectionHeading';
 import { useSectionContent, useSectionDarkBackground } from '@/hooks/useSectionContent';
 import { useSiteSettingsMap } from '@/hooks/useSiteSettingsMap';
 import { sectionSurfaceClass, sectionTheme } from '@/utils/sectionSurface';
+import { deecCopy } from '@/utils/deecCopy';
 import { cn } from '@/utils/cn';
 
 const STEP_ICONS: LucideIcon[] = [MessageSquare, PhoneCall, Rocket];
@@ -21,14 +22,14 @@ function ExpectStep({ step, title, text, icon: Icon, isDark }: StepProps) {
   return (
     <div
       className={cn(
-        'relative flex flex-col rounded-2xl border p-6 sm:p-7',
+        'relative flex flex-col rounded-sm border p-6 sm:p-7',
         isDark ? 'border-white/10 bg-white/5' : 'border-slate-200 bg-white shadow-sm',
       )}
     >
       <div className="mb-4 flex items-center gap-3">
         <span
           className={cn(
-            'flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold',
+            'flex h-9 w-9 shrink-0 items-center justify-center rounded-sm text-sm font-semibold',
             isDark ? 'bg-brand-gold-500/20 text-brand-gold-400' : 'bg-brand-gold-500/15 text-brand-gold-600',
           )}
         >
@@ -55,32 +56,36 @@ export function ContactExpectSection() {
   const isDark = useSectionDarkBackground('contact_expect', true);
   const theme = sectionTheme(isDark);
   const { get } = useSiteSettingsMap();
-  const section = useSectionContent('contact_expect', {
-    eyebrow: 'What happens next',
-    title: 'A clear path from first message to next steps',
-    subtitle: 'We keep the process straightforward so you know what to expect after reaching out.',
-  });
+  const raw = useSectionContent('contact_expect');
+  const section = {
+    eyebrow: deecCopy(raw.eyebrow, 'What happens next'),
+    title: deecCopy(raw.title, 'From first message to site assessment'),
+    subtitle: deecCopy(
+      raw.subtitle,
+      'A straightforward path so you know what to expect after reaching out.',
+    ),
+  };
 
   const steps = [
     {
-      title: get('contact_expect_step1_title', 'Send your message'),
-      text: get(
-        'contact_expect_step1_text',
-        'Tell us about your project, timeline, and goals — the more context, the better we can help.',
+      title: deecCopy(get('contact_expect_step1_title'), 'Send your inquiry'),
+      text: deecCopy(
+        get('contact_expect_step1_text'),
+        'Tell us the building, equipment brand or type, and whether you need supply, modernization, or service.',
       ),
     },
     {
-      title: get('contact_expect_step2_title', 'We review & respond'),
-      text: get(
-        'contact_expect_step2_text',
-        'A solutions consultant reviews your inquiry and replies within one business day.',
+      title: deecCopy(get('contact_expect_step2_title'), 'We review & respond'),
+      text: deecCopy(
+        get('contact_expect_step2_text'),
+        'Our team replies within one business day and, when applicable, schedules a free Metro Manila assessment.',
       ),
     },
     {
-      title: get('contact_expect_step3_title', 'Plan next steps'),
-      text: get(
-        'contact_expect_step3_text',
-        "We'll schedule a call to scope requirements and recommend the best path forward.",
+      title: deecCopy(get('contact_expect_step3_title'), 'Survey & proposal'),
+      text: deecCopy(
+        get('contact_expect_step3_text'),
+        'We confirm shaft and site conditions, then recommend equipment or a maintenance plan.',
       ),
     },
   ];
