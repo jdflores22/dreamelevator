@@ -8,7 +8,7 @@ import { Spinner } from '@/components/ui/Spinner';
 import { RichTextEditor } from '@/components/admin/RichTextEditor';
 import { SaveFeedback, SettingsPanel } from '@/components/admin/SettingsPanel';
 import { SettingsImageField } from '@/components/admin/SettingsImageField';
-import { ImageUploadField } from '@/components/admin/ImageUploadField';
+import { GalleryPhotosField } from '@/components/admin/GalleryPhotosField';
 import { parseGalleryImages, serializeGalleryImages } from '@/utils/gallery';
 import {
   persistAboutThemesFromForm,
@@ -358,23 +358,14 @@ export function ContentSettings({
   const renderField = (field: FieldDef, groupId: string) =>
     field.type === 'images' ? (
       <div key={field.key} className="sm:col-span-2">
-        <ImageUploadField
-          label={field.label}
-          value={galleryOf(field.key).map((image) => image.src)}
-          onChange={(urls) => {
-            // Keep any alt text already written for a photo that is still in the list.
-            const alts = new Map(galleryOf(field.key).map((image) => [image.src, image.alt]));
+        <GalleryPhotosField
+          value={galleryOf(field.key)}
+          onChange={(images) =>
             setImageDrafts((prev) => ({
               ...prev,
-              [field.key]: serializeGalleryImages(
-                urls.map((src) => ({ src, alt: alts.get(src) ?? '' })),
-              ),
-            }));
-          }}
-          folder="gallery"
-          multiple
-          uploadLabel="Upload photo"
-          hint="Shown in the grid on /gallery, in this order."
+              [field.key]: serializeGalleryImages(images),
+            }))
+          }
         />
       </div>
     ) : field.type === 'richtext' ? (
