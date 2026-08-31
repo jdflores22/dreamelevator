@@ -8,6 +8,8 @@ import { Spinner } from '@/components/ui/Spinner';
 import { RichTextEditor } from '@/components/admin/RichTextEditor';
 import { SaveFeedback, SettingsPanel } from '@/components/admin/SettingsPanel';
 import { SettingsImageField } from '@/components/admin/SettingsImageField';
+import { ImageUploadField } from '@/components/admin/ImageUploadField';
+import { parseGalleryImages, serializeGalleryImages } from '@/utils/gallery';
 import {
   persistAboutThemesFromForm,
   SectionThemeField,
@@ -17,7 +19,7 @@ import type { SiteSetting } from '@/types';
 type FieldDef = {
   key: string;
   label: string;
-  type?: 'text' | 'textarea' | 'select' | 'richtext';
+  type?: 'text' | 'textarea' | 'select' | 'richtext' | 'images';
   rows?: number;
   options?: { value: string; label: string }[];
 };
@@ -88,17 +90,12 @@ const CONTENT_GROUPS: {
   {
     id: 'gallery',
     title: 'Gallery page',
-    description: 'Photo grid on /gallery. One image URL per line, or JSON [{ "src", "alt" }].',
+    description: 'Photo grid on /gallery. Upload photos or pick them from the media library.',
     icon: ImageIcon,
     fields: [
       { key: 'gallery_page_title', label: 'Page title' },
       { key: 'gallery_page_subtitle', label: 'Page subtitle', type: 'textarea', rows: 2 },
-      {
-        key: 'gallery_images',
-        label: 'Photos (JSON or one URL per line, optional |alt)',
-        type: 'textarea',
-        rows: 10,
-      },
+      { key: 'gallery_images', label: 'Photos', type: 'images' },
     ],
     imageKey: 'gallery_hero_image',
   },
@@ -305,12 +302,15 @@ export function ContentSettings({
     setSavedGroup(null);
     setSavingGroup(groupId);
     try {
-      const saves = fields.map((field) =>
-        saveField(field, String(formData.get(field.key) ?? ''), group),
-      );
+      // Image and rich-text fields render no form input, so reading them from the form
+      // would overwrite the stored value with an empty string. They save from drafts below.
+      const saves = fields
+        .filter((field) => field.type !== 'images' && field.type !== 'richtext')
+        .map((field) => saveField(field, String(formData.get(field.key) ?? ''), group));
       const imageKeys = [
         ...(imageKey ? [imageKey] : []),
         ...(imageFields?.map((img) => img.key) ?? []),
+        ...fields.filter((field) => field.type === 'images').map((field) => field.key),
       ];
       for (const key of imageKeys) {
         if (key in imageDrafts) {
@@ -352,8 +352,32 @@ export function ContentSettings({
 
   const isSaving = createMutation.isPending || updateMutation.isPending;
 
+  const galleryOf = (key: string) =>
+    parseGalleryImages(imageDrafts[key] ?? getValue(settings, key));
+
   const renderField = (field: FieldDef, groupId: string) =>
-    field.type === 'richtext' ? (
+    field.type === 'images' ? (
+      <div key={field.key} className="sm:col-span-2">
+        <ImageUploadField
+          label={field.label}
+          value={galleryOf(field.key).map((image) => image.src)}
+          onChange={(urls) => {
+            // Keep any alt text already written for a photo that is still in the list.
+            const alts = new Map(galleryOf(field.key).map((image) => [image.src, image.alt]));
+            setImageDrafts((prev) => ({
+              ...prev,
+              [field.key]: serializeGalleryImages(
+                urls.map((src) => ({ src, alt: alts.get(src) ?? '' })),
+              ),
+            }));
+          }}
+          folder="gallery"
+          multiple
+          uploadLabel="Upload photo"
+          hint="Shown in the grid on /gallery, in this order."
+        />
+      </div>
+    ) : field.type === 'richtext' ? (
       <div key={field.key} className="sm:col-span-2">
         <RichTextEditor
           label={field.label}
