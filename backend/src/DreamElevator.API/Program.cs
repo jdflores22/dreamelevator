@@ -136,16 +136,28 @@ try
     }
 
     // A volume mounted at wwwroot/uploads starts empty, and static file serving needs
-    // the directory to exist before the first upload creates it.
+    // the directory to exist before the first upload creates it. The log line tells us
+    // whether uploads actually survive a deploy, which only happens on a mounted volume.
     try
     {
         var webRoot = app.Environment.WebRootPath
             ?? Path.Combine(app.Environment.ContentRootPath, "wwwroot");
-        Directory.CreateDirectory(Path.Combine(webRoot, "uploads"));
+        var uploadsDir = Path.Combine(webRoot, "uploads");
+        Directory.CreateDirectory(uploadsDir);
+
+        var carriedOver = Directory.EnumerateFiles(uploadsDir, "*", SearchOption.AllDirectories).Count();
+        var mounted = File.Exists("/proc/mounts")
+            && File.ReadAllLines("/proc/mounts").Any(line => line.Contains(" " + uploadsDir + " "));
+
+        Log.Information(
+            "Uploads directory {UploadsDir}: {Count} file(s) present at startup, volume mounted: {Mounted}",
+            uploadsDir,
+            carriedOver,
+            mounted);
     }
     catch (Exception ex)
     {
-        Log.Warning(ex, "Failed to create the uploads directory");
+        Log.Warning(ex, "Failed to prepare the uploads directory");
     }
 
     app.UseSerilogRequestLogging();
