@@ -1,12 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
-    <!-- Ship a baseline set of uploaded images with the build so fresh/ephemeral
-         deploys (e.g. Railway) match local. Restored into wwwroot/uploads at startup. -->
-    <Content Include="seed-uploads\**" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="Never" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\TransNet.Application\TransNet.Application.csproj" />
     <ProjectReference Include="..\TransNet.Infrastructure\TransNet.Infrastructure.csproj" />
     <ProjectReference Include="..\TransNet.Persistence\TransNet.Persistence.csproj" />

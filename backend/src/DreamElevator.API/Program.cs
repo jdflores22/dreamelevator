@@ -135,38 +135,17 @@ try
         }
     }
 
-    // Restore bundled seed images into the (possibly volume-backed, ephemeral) uploads
-    // directory so deploys such as Railway show the same images as local. Existing files
-    // are never overwritten, so user uploads on a persistent volume are preserved.
+    // A volume mounted at wwwroot/uploads starts empty, and static file serving needs
+    // the directory to exist before the first upload creates it.
     try
     {
-        var seedDir = Path.Combine(app.Environment.ContentRootPath, "seed-uploads");
         var webRoot = app.Environment.WebRootPath
             ?? Path.Combine(app.Environment.ContentRootPath, "wwwroot");
-        var uploadsDir = Path.Combine(webRoot, "uploads");
-
-        if (Directory.Exists(seedDir))
-        {
-            var restored = 0;
-            foreach (var source in Directory.EnumerateFiles(seedDir, "*", SearchOption.AllDirectories))
-            {
-                var relative = Path.GetRelativePath(seedDir, source);
-                var destination = Path.Combine(uploadsDir, relative);
-                if (File.Exists(destination))
-                    continue;
-
-                Directory.CreateDirectory(Path.GetDirectoryName(destination)!);
-                File.Copy(source, destination);
-                restored++;
-            }
-
-            if (restored > 0)
-                Log.Information("Restored {Count} seed image(s) into {UploadsDir}", restored, uploadsDir);
-        }
+        Directory.CreateDirectory(Path.Combine(webRoot, "uploads"));
     }
     catch (Exception ex)
     {
-        Log.Warning(ex, "Failed to restore seed images into uploads directory");
+        Log.Warning(ex, "Failed to create the uploads directory");
     }
 
     app.UseSerilogRequestLogging();
