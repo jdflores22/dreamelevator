@@ -1,4 +1,4 @@
-# TRANS-NET Official Website Architecture
+# Dream Elevator Official Website Architecture
 
 Version: 1.0
 Architecture: Clean Architecture + Vertical Slice + Modular Monolith
@@ -8,7 +8,7 @@ Author: June Dionelle Flores
 
 # Overview
 
-The TRANS-NET Official Website is designed as a modern, high-performance software company website that serves both as a marketing platform and a customer engagement portal.
+The Dream Elevator Official Website is designed as a modern, high-performance software company website that serves both as a marketing platform and a customer engagement portal.
 
 The architecture focuses on:
 
